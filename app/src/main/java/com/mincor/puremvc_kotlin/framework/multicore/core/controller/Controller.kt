@@ -7,10 +7,6 @@ import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IFunction
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.ICommand
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
 
-
-/**
- * Created by a.minkin on 21.11.2017.
- */
 open class Controller(private val multitonKey: String) : IController {
 
     /**
@@ -21,7 +17,7 @@ open class Controller(private val multitonKey: String) : IController {
     /**
      * Local reference to View
      */
-    protected var view: View? = null
+    protected var view: View
 
     companion object {
         private val instanceMap: MutableMap<String, Controller> = HashMap()
@@ -35,7 +31,7 @@ open class Controller(private val multitonKey: String) : IController {
         }
         /**
          * Remove an IController instance
-         * @param multitonKey of IController instance to remove
+         * @param key of IController instance to remove
          */
         @Synchronized
         fun removeController(key: String) {
@@ -45,30 +41,6 @@ open class Controller(private val multitonKey: String) : IController {
 
     init {
         instanceMap.put(multitonKey, this)
-        initializeController()
-    }
-
-    /**
-     * Initialize the Multiton `Controller` instance.
-     *
-     * <P>Called automatically by the constructor.</P>
-     *
-     * <P>Note that if you are using a subclass of `View`
-     * in your application, you should *also* subclass `Controller`
-     * and override the `initializeController` method in the
-     * following way:</P>
-     *
-     * <listing>
-     * // ensure that the Controller is talking to my IView implementation
-     * override public function initializeController(  ) : void
-     * {
-     * view = MyView.getInstance();
-     * }
-    </listing> *
-     *
-     * @return void
-     */
-    private fun initializeController() {
         this.view = View.getInstance(multitonKey)
     }
 
@@ -76,14 +48,14 @@ open class Controller(private val multitonKey: String) : IController {
      * If an `ICommand` has previously been registered to handle a
      * the given `INotification`, then it is executed.
      *
-     * @param note
+     * @param notification
      * an `INotification`
      */
-    override fun executeCommand(note: INotification) {
-        val commandInstance = this.commandMap[note.name] as ICommand
+    override fun executeCommand(notification: INotification) {
+        val commandInstance = this.commandMap[notification.name] as ICommand
         commandInstance.let {
             it.initializeNotifier(multitonKey)
-            it.execute(note)
+            it.execute(notification)
         }
     }
 
@@ -107,7 +79,7 @@ open class Controller(private val multitonKey: String) : IController {
      */
     override fun registerCommand(notificationName: String, command: ICommand) {
         if (null != this.commandMap.put(notificationName, command)) return
-        this.view?.registerObserver(notificationName, Observer(object : IFunction {
+        this.view.registerObserver(notificationName, Observer(object : IFunction {
             override fun onNotification(notification: INotification) {
                 executeCommand(notification)
             }
@@ -126,7 +98,7 @@ open class Controller(private val multitonKey: String) : IController {
         // if the Command is registered...
         if (hasCommand(notificationName)) {
             // remove the observer
-            view?.removeObserver(notificationName, this)
+            view.removeObserver(notificationName, this)
             this.commandMap.remove(notificationName)
         }
     }

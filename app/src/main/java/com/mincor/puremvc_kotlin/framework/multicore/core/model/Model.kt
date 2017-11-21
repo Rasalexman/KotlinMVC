@@ -27,7 +27,7 @@ open class Model(private var multitonKey: String) : IModel {
         /**
          * Remove an IModel instance
          *
-         * @param multitonKey of IModel instance to remove
+         * @param key of IModel instance to remove
          */
         @Synchronized
         fun removeModel(key: String) {
@@ -42,10 +42,9 @@ open class Model(private var multitonKey: String) : IModel {
      * directly, but instead call the static Multiton
      * Factory method `Model.getInstance( multitonKey )`
      *
-     * @throws Error Error if instance for this Multiton key instance has already been constructed
     </P> */
     init {
-        instanceMap.put(multitonKey, this)
+        instanceMap.getOrPut(multitonKey){this}
         initializeModel()
     }
 
@@ -60,8 +59,6 @@ open class Model(private var multitonKey: String) : IModel {
      *
      */
     open fun initializeModel() {}
-
-
 
     /**
      * Register an `Proxy` with the `Model`.
@@ -78,12 +75,12 @@ open class Model(private var multitonKey: String) : IModel {
     /**
      * Remove an `Proxy` from the `Model`.
      *
-     * @param proxy
+     * @param proxyName
      * name of the `Proxy` instance to be removed.
      */
     override fun removeProxy(proxyName: String): IProxy {
         val proxy = this.proxyMap[proxyName] as IProxy
-        proxy?.let {
+        proxy.let {
             this.proxyMap.remove(proxyName)
             it.onRemove()
         }
