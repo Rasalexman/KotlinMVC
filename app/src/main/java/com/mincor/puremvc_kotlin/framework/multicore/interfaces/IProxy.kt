@@ -6,7 +6,7 @@ package com.mincor.puremvc_kotlin.framework.multicore.interfaces
 interface IProxy : INotifier {
 
     var proxyName:String
-    var data: Any?
+    var data: MutableCollection<Any>
     /**
      * Called by the Model when the Proxy is registered.
      */

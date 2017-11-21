@@ -33,7 +33,7 @@ open class View(var multitonKey: String) : IView {
         /**
          * Remove an IView instance
          *
-         * @param multitonKey of IView instance to remove
+         * @param key of IView instance to remove
          */
         @Synchronized
         fun removeView(key: String) {
@@ -50,11 +50,9 @@ open class View(var multitonKey: String) : IView {
      * so you should not call the constructor
      * directly, but instead call the static Multiton
      * Factory method `View.getInstance( multitonKey )`
-     *
-     * @throws Error Error if instance for this Multiton key has already been constructed
     </P> */
     init {
-        instanceMap.put(multitonKey, this)
+        instanceMap.getOrPut(multitonKey){this}
         initializeView()
     }
 

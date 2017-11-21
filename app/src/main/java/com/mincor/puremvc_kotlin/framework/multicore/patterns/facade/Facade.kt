@@ -10,7 +10,7 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notificat
 /**
  * Created by a.minkin on 21.11.2017.
  */
-class Facade(var multitonKey: String) : IFacade {
+open class Facade(var multitonKey: String) : IFacade {
 
     /**
      * Reference to the Controller
@@ -54,7 +54,7 @@ class Facade(var multitonKey: String) : IFacade {
 
         /**
          * Remove a Core
-         * @param multitonKey of the Core to remove
+         * @param key of the Core to remove
          */
         @Synchronized
         fun removeCore(key: String) {
@@ -105,7 +105,7 @@ class Facade(var multitonKey: String) : IFacade {
      * method, then register `Command`s.
      *
      */
-    protected fun initializeController() {
+    protected open fun initializeController() {
         if (this.controller != null) {
             return
         }
@@ -136,7 +136,7 @@ class Facade(var multitonKey: String) : IFacade {
      * their construction.
     </P> *
      */
-    protected fun initializeModel() {
+    protected open fun initializeModel() {
         if (this.model != null) {
             return
         }
@@ -167,7 +167,7 @@ class Facade(var multitonKey: String) : IFacade {
      * reference to the `Facade` during their construction.
     </P> *
      */
-    protected fun initializeView() {
+    protected open fun initializeView() {
         if (this.view != null) {
             return
         }
@@ -320,7 +320,5 @@ class Facade(var multitonKey: String) : IFacade {
         this.view?.notifyObservers(notification)
     }
 
-    override fun initializeNotifier(key: String) {
-        multitonKey = key
-    }
+    override fun initializeNotifier(key: String) {}
 }
