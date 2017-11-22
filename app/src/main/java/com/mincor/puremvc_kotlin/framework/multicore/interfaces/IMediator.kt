@@ -45,11 +45,11 @@ interface IMediator : INotifier {
     /**
      *
      */
-    fun show(popLast:Boolean)
+    fun show(popLast:Boolean = false)
 
     /**
      *
      */
-    fun hide(popIt:Boolean)
+    fun hide(popIt:Boolean = false)
 
 }

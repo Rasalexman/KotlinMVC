@@ -16,6 +16,6 @@ class MainActivity : AppCompatActivity() {
         val container = linearLayout {lparams(matchParent, matchParent)}
         val appFacade:AppFacade = Facade.getInstance(AppFacade.NAME) as AppFacade
         appFacade.attachActivity(this, container)
-        appFacade.showMeditator(UserAuthMediator.NAME)
+        appFacade.retrieveMediator(UserAuthMediator.NAME)?.show()
     }
 }
