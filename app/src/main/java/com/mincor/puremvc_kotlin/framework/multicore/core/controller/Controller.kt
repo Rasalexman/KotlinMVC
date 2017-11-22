@@ -40,7 +40,7 @@ open class Controller(private val multitonKey: String) : IController {
     }
 
     init {
-        instanceMap.put(multitonKey, this)
+        instanceMap.getOrPut(multitonKey) { this }
         this.view = View.getInstance(multitonKey)
     }
 
@@ -78,7 +78,10 @@ open class Controller(private val multitonKey: String) : IController {
      * an instance of `ICommand`
      */
     override fun registerCommand(notificationName: String, command: ICommand) {
-        if (null != this.commandMap.put(notificationName, command)) return
+        if (hasCommand(notificationName)) {
+            return
+        }
+        this.commandMap.getOrPut(notificationName) { command }
         this.view.registerObserver(notificationName, Observer(object : IFunction {
             override fun onNotification(notification: INotification) {
                 executeCommand(notification)
@@ -110,6 +113,6 @@ open class Controller(private val multitonKey: String) : IController {
      * @return whether a Command is currently registered for the given `notificationName`.
      */
     override fun hasCommand(notificationName: String): Boolean {
-        return commandMap.containsKey(notificationName)
+        return commandMap[notificationName] != null
     }
 }

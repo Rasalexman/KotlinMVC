@@ -1,5 +1,7 @@
 package com.mincor.puremvc_kotlin.facades
 
+import android.content.Context
+import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.controllers.StartupCommand
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.facade.Facade
 
@@ -16,5 +18,12 @@ class AppFacade : Facade(NAME) {
     override fun initializeController() {
         super.initializeController()
         registerCommand(STARTUP, StartupCommand())
+    }
+
+    /**
+     * Start the application
+     */
+    fun startup(context: ViewGroup) {
+        sendNotification( STARTUP, context)
     }
 }

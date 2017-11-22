@@ -149,7 +149,7 @@ open class View(var multitonKey: String) : IView {
             mediator.initializeNotifier(multitonKey)
 
             // Register the Mediator for retrieval by name
-            this.mediatorMap.put(mediator.mediatorName, mediator)
+            this.mediatorMap.getOrPut(mediator.mediatorName){mediator}
 
             // Get Notification interests, if any.
             val noteInterests = mediator.listNotificationInterests()
