@@ -1,6 +1,8 @@
 package com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator
 
+import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IMediator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
@@ -9,14 +11,11 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
 /**
  * Created by a.minkin on 21.11.2017.
  */
-open class Mediator(override val mediatorName: String = NAME) : Notifier(), IMediator {
+abstract class Mediator(override val mediatorName: String) : Notifier(), IMediator {
 
-    override val viewComponent: View? = null
-
-    companion object {
-        //The default name of the `Mediator`.
-        const val NAME = "Mediator"
-    }
+    override var viewComponent: View? = null
+    override val container: ViewGroup get() = getFacade().currentContainer!!
+    override val activity: Activity get() =  getFacade().currentActivity!!
 
     /**
      * Handle `INotification`s.
@@ -42,10 +41,15 @@ open class Mediator(override val mediatorName: String = NAME) : Notifier(), IMed
     /**
      * Called by the View when the Mediator is registered.
      */
-    override fun onRegister() {}
+    override fun onRegister() {
+        viewComponent?.parent?:container.addView(viewComponent)
+    }
 
     /**
      * Called by the View when the Mediator is removed.
      */
-    override fun onRemove() {}
+    override fun onRemove() {
+        container.removeView(viewComponent)
+        viewComponent = null
+    }
 }

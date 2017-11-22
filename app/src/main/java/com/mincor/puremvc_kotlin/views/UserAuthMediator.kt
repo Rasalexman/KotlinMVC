@@ -20,9 +20,7 @@ import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 /**
  * Created by a.minkin on 22.11.2017.
  */
-class UserAuthMediator(private val container: ViewGroup) : Mediator(NAME) {
-
-    override val viewComponent: View? = UserAuthUI().createView(AnkoContext.create(container.context, this))
+class UserAuthMediator : Mediator(NAME) {
 
     companion object {
         val NAME = "user_auth_mediator"
@@ -31,12 +29,8 @@ class UserAuthMediator(private val container: ViewGroup) : Mediator(NAME) {
     var name = ""
     var password = ""
 
-    override fun onRegister() {
-        container.addView(viewComponent)
-    }
-
-    override fun onRemove() {
-        container.removeView(viewComponent)
+    override fun onCreateView() {
+        viewComponent = UserAuthUI().createView(AnkoContext.create(container.context, this))
     }
 
     fun nameUpdated(newName: String) {
@@ -67,9 +61,9 @@ class UserAuthMediator(private val container: ViewGroup) : Mediator(NAME) {
         when(notification.name){
             UserProxy.NOTIFICATION_AUTH_COMPLETE -> {
                 getFacade().removeMediator(NAME)
-                getFacade().registerMediator(UserListsMediator(container))
+                getFacade().registerMediator(UserListsMediator())
             }
-            UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(viewComponent?.context, "Login Failed", Toast.LENGTH_SHORT).show()
+            UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(container.context, "Login Failed", Toast.LENGTH_SHORT).show()
         }
     }
 

@@ -25,7 +25,7 @@ class AppFacade : Facade(NAME) {
     /**
      * Start the application
      */
-    fun startup(context: ViewGroup) {
-        sendNotification( STARTUP, context)
+    fun startup() {
+        sendNotification( STARTUP )
     }
 }

@@ -1,6 +1,8 @@
 package com.mincor.puremvc_kotlin.framework.multicore.patterns.facade
 
 import android.app.Activity
+import android.app.Application
+import android.os.Bundle
 import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.framework.multicore.core.controller.Controller
 import com.mincor.puremvc_kotlin.framework.multicore.core.model.Model
@@ -13,6 +15,16 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notificat
  * Created by a.minkin on 21.11.2017.
  */
 open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
+
+    /**
+     * Reference to the Activity attached on core
+     */
+    var currentActivity:Activity? = null
+
+    /**
+     * Instance of ui container
+     */
+    var currentContainer:ViewGroup? = null
 
     /**
      * Reference to the Controller
@@ -96,7 +108,42 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * Only one core can has one attached activity
      */
     override fun attachActivity(activity: Activity, container: ViewGroup) {
+        currentContainer = container
 
+        currentActivity?:let {
+            currentActivity = activity
+            currentActivity!!.application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
+
+                override fun onActivityCreated(p0: Activity?, p1: Bundle?) {
+                    print("onActivityCreated")
+                }
+
+                override fun onActivityStarted(p0: Activity?) {
+                    print("onActivityStarted")
+                }
+
+                override fun onActivityResumed(p0: Activity?) {
+                    print("onActivityResumed")
+                }
+
+                override fun onActivityPaused(p0: Activity?) {
+                    print("onActivityPaused")
+                }
+
+                override fun onActivityStopped(p0: Activity?) {
+                    print("onActivityStopped")
+                }
+
+                override fun onActivityDestroyed(p0: Activity?) {
+                    print("onActivityDestroyed")
+                    currentContainer?.removeAllViews()
+                }
+
+                override fun onActivitySaveInstanceState(p0: Activity?, p1: Bundle?) {
+
+                }
+            })
+        }
     }
 
     /**

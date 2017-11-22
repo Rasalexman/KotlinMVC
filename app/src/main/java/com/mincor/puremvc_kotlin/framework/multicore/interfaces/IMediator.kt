@@ -1,13 +1,25 @@
 package com.mincor.puremvc_kotlin.framework.multicore.interfaces
 
+import android.app.Activity
 import android.view.View
+import android.view.ViewGroup
 
 /**
  * Created by a.minkin on 21.11.2017.
  */
 interface IMediator : INotifier {
     val mediatorName: String
-    val viewComponent: View?
+    var viewComponent: View?
+
+    /**
+     * Container for current UI
+     */
+    val container:ViewGroup
+    /**
+     * Current Activity for core
+     */
+    val activity:Activity
+
     /**
      * List `INotification` interests.
      *
@@ -23,6 +35,11 @@ interface IMediator : INotifier {
      * the `INotification` to be handled
      */
     fun handleNotification(notification: INotification)
+
+    /**
+     * Called by the register mediator once
+     */
+    fun onCreateView()
 
     /**
      * Called by the View when the Mediator is registered.

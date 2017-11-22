@@ -142,24 +142,23 @@ open class View(var multitonKey: String) : IView {
      * instance
      */
     override fun registerMediator(mediator: IMediator) {
-        if (!this.mediatorMap.containsKey(mediator.mediatorName)) {
-            mediator.initializeNotifier(multitonKey)
-
-            // Register the Mediator for retrieval by name
-            this.mediatorMap.getOrPut(mediator.mediatorName){mediator}
-
+        // Register the Mediator for retrieval by name
+        val currentMediator = this.mediatorMap.getOrPut(mediator.mediatorName){mediator}
+        // Only fresh mediators can register observers
+        currentMediator.multitonKey?:let {
+            currentMediator.initializeNotifier(multitonKey)
             // Get Notification interests, if any.
-            val noteInterests = mediator.listNotificationInterests()
+            val noteInterests = currentMediator.listNotificationInterests()
             if (noteInterests.isNotEmpty()) {
                 // Create java style function ref to mediator.handleNotification
                 val function = object : IFunction {
                     override fun onNotification(notification: INotification) {
-                        mediator.handleNotification(notification)
+                        currentMediator.handleNotification(notification)
                     }
                 }
 
                 // Create Observer
-                val observer = Observer(function, mediator)
+                val observer = Observer(function, it)
 
                 // Register Mediator as Observer for its list of Notification
                 // interests
@@ -167,10 +166,9 @@ open class View(var multitonKey: String) : IView {
                     registerObserver(s, observer)
                 }
             }
-
-            // alert the mediator that it has been registered
-            mediator.onRegister()
+            currentMediator.onCreateView()
         }
+        currentMediator.onRegister()
     }
 
     /**
@@ -204,7 +202,7 @@ open class View(var multitonKey: String) : IView {
             // remove the observer linking the mediator
             // to the notification interest
             interests.forEachIndexed { _, s ->
-                removeObserver(s, mediator)
+                removeObserver(s, it)
             }
             // remove the mediator from the map
             mediatorMap.remove(mediatorName)
