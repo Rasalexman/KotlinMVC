@@ -78,7 +78,7 @@ open class Controller(private val multitonKey: String) : IController {
      * an instance of `ICommand`
      */
     override fun registerCommand(notificationName: String, command: ICommand) {
-        if (hasCommand(notificationName)) {
+        if (this.commandMap.containsKey(notificationName)) {
             return
         }
         this.commandMap.getOrPut(notificationName) { command }

@@ -1,14 +1,15 @@
 package com.mincor.puremvc_kotlin.framework.multicore.patterns.observer
 
+import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotifier
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.facade.Facade
 
 /**
  * Created by a.minkin on 21.11.2017.
  */
-open class Notifier {
+open class Notifier : INotifier {
 
     // The Multiton Key for this app
-    protected var multitonKey: String? = null
+    override var multitonKey: String? = null
 
     protected fun getFacade(): Facade {
         if (multitonKey == null) {
@@ -31,7 +32,7 @@ open class Notifier {
      * @param type
      * the type of the notification (optional)
     </P> */
-    fun sendNotification(notificationName: String, body: Any?, type: String?) {
+    override fun sendNotification(notificationName: String, body: Any?, type: String?) {
         getFacade().sendNotification(notificationName, body, type)
     }
 
@@ -53,7 +54,7 @@ open class Notifier {
      *
      * @param key the multitonKey for this INotifier to use
      */
-    fun initializeNotifier(key: String) {
+    override fun initializeNotifier(key: String) {
         multitonKey = key
     }
 }

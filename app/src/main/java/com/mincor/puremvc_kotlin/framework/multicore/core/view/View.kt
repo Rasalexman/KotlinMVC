@@ -85,8 +85,7 @@ open class View(var multitonKey: String) : IView {
      * `Observers` of.
      */
     override fun notifyObservers(note: INotification) {
-        val observers = this.observerMap[note.name] as List<IObserver>
-        observers.let {
+        this.observerMap[note.name]?.let {
             // Copy observers from reference array to working array,
             // since the reference array may change during the
             // notification loop
@@ -106,9 +105,7 @@ open class View(var multitonKey: String) : IView {
     </P> */
     fun removeObserver(notificationName: String, notifyContext: Any) {
         // the observer list for the notification under inspection
-        val observers = observerMap[notificationName]
-
-        observers?.let {
+        this.observerMap[notificationName]?.let {
             // find the observer for the notifyContext
             it.forEachIndexed { _, iObserver ->
                 if (iObserver.compareNotifyContext(notifyContext)) {

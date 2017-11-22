@@ -6,10 +6,13 @@ import com.mincor.puremvc_kotlin.models.vo.UserModel
 /**
  * Created by a.minkin on 21.11.2017.
  */
-class UserProxy : Proxy<UserModel>(NAME, mutableListOf()) {
+class UserProxy : Proxy<MutableList<UserModel>>(NAME, mutableListOf()) {
 
     companion object {
         val NAME = "UserProxy"
+
+        val NOTIFICATION_AUTH_COMPLETE = "AUTH_COMPLETE"
+        val NOTIFICATION_AUTH_FAILED = "AUTH_FAILED"
     }
 
     init {
@@ -22,13 +25,16 @@ class UserProxy : Proxy<UserModel>(NAME, mutableListOf()) {
      * Authorization User
      */
     fun authorization(email:String, pass:String){
-        data.forEach {
-            if(it.email == email && it.password == pass){
-
-                //this.sendNotification("AUTH_COMPLETE")
+        data.forEachIndexed { _, userModel ->
+            if(userModel.email == email && userModel.password == pass){
+                this.sendNotification(NOTIFICATION_AUTH_COMPLETE)
+                return
             }
         }
+        this.sendNotification(NOTIFICATION_AUTH_FAILED)
     }
+
+
 
     /**
      * Add an item to the data.

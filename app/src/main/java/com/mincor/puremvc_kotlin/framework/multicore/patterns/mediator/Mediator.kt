@@ -2,16 +2,14 @@ package com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator
 
 import android.view.View
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IMediator
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotifier
-import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
-
+import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
 
 
 /**
  * Created by a.minkin on 21.11.2017.
  */
-open class Mediator(override val mediatorName: String = NAME) : Notifier(), IMediator, INotifier {
+open class Mediator(override val mediatorName: String = NAME) : Notifier(), IMediator {
 
     override val viewComponent: View? = null
 

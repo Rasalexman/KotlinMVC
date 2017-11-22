@@ -1,8 +1,8 @@
 package com.mincor.puremvc_kotlin.facades
 
-import android.content.Context
 import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.controllers.StartupCommand
+import com.mincor.puremvc_kotlin.controllers.UserAuthCommand
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.facade.Facade
 
 /**
@@ -13,11 +13,13 @@ class AppFacade : Facade(NAME) {
     companion object {
         val NAME = "APP_FACADE"
         val STARTUP = "startup"
+        val AUTH = "auth"
     }
 
     override fun initializeController() {
         super.initializeController()
-        registerCommand(STARTUP, StartupCommand())
+        registerCommand(STARTUP,    StartupCommand())
+        registerCommand(AUTH,       UserAuthCommand())
     }
 
     /**

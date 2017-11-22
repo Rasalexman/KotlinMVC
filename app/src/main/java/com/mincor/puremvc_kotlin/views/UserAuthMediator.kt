@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.mincor.puremvc_kotlin.R
+import com.mincor.puremvc_kotlin.facades.AppFacade
+import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.Mediator
 import com.mincor.puremvc_kotlin.models.UserProxy
 import org.jetbrains.anko.*
@@ -20,14 +22,10 @@ import org.jetbrains.anko.sdk25.coroutines.textChangedListener
  */
 class UserAuthMediator(private val container: ViewGroup) : Mediator(NAME) {
 
-    override val viewComponent: View? = UserListUI().createView(AnkoContext.create(container.context, this))
+    override val viewComponent: View? = UserAuthUI().createView(AnkoContext.create(container.context, this))
 
     companion object {
-        val NAME = "user_list_mediator"
-    }
-
-    val userProxy:UserProxy by lazy {
-        this.getFacade().retrieveProxy(UserProxy.NAME) as UserProxy
+        val NAME = "user_auth_mediator"
     }
 
     var name = ""
@@ -39,10 +37,6 @@ class UserAuthMediator(private val container: ViewGroup) : Mediator(NAME) {
 
     override fun onRemove() {
         container.removeView(viewComponent)
-    }
-
-    private fun onNavigationClicked(){
-
     }
 
     fun nameUpdated(newName: String) {
@@ -62,14 +56,24 @@ class UserAuthMediator(private val container: ViewGroup) : Mediator(NAME) {
     }
 
     private fun onLoginClicked() {
-        if (name == "user" && password == "test") {
-            getFacade().removeMediator(NAME)
-            return
-        }
-        Toast.makeText(viewComponent?.context, "Login Failed", Toast.LENGTH_SHORT).show()
+       sendNotification(AppFacade.AUTH, arrayOf(name, password))
     }
 
-    inner class UserListUI : AnkoComponent<UserAuthMediator>{
+    override fun listNotificationInterests(): Array<String> {
+        return arrayOf(UserProxy.NOTIFICATION_AUTH_COMPLETE, UserProxy.NOTIFICATION_AUTH_FAILED)
+    }
+
+    override fun handleNotification(notification: INotification) {
+        when(notification.name){
+            UserProxy.NOTIFICATION_AUTH_COMPLETE -> {
+                getFacade().removeMediator(NAME)
+                getFacade().registerMediator(UserListsMediator(container))
+            }
+            UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(viewComponent?.context, "Login Failed", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    inner class UserAuthUI : AnkoComponent<UserAuthMediator>{
         override fun createView(ui: AnkoContext<UserAuthMediator>) = with(ui){
             verticalLayout {
                 lparams(matchParent, matchParent)
@@ -77,7 +81,6 @@ class UserAuthMediator(private val container: ViewGroup) : Mediator(NAME) {
                     setTitleTextColor(ContextCompat.getColor(ctx, android.R.color.white))
                     title = "Login"
                     backgroundResource = R.color.colorPrimary
-                    setNavigationOnClickListener({ onNavigationClicked() })
                 }
 
                 editText(name) {

@@ -12,7 +12,7 @@ interface IFacade : INotifier {
      * the `IProxy` to be registered with the
      * `Model`.
      */
-    fun registerProxy(proxy: IProxy)
+    fun registerProxy(proxy: IProxy<*>)
 
     /**
      * Retrieve a `IProxy` from the `Model` by name.
@@ -23,7 +23,7 @@ interface IFacade : INotifier {
      * @return the `IProxy` previously regisetered by
      * `proxyName` with the `Model`.
      */
-    fun retrieveProxy(proxyName: String): IProxy?
+    fun retrieveProxy(proxyName: String): IProxy<*>?
 
     /**
      * Remove an `IProxy` instance from the `Model` by
@@ -33,7 +33,7 @@ interface IFacade : INotifier {
      * the `IProxy` to remove from the
      * `Model`.
      */
-    fun removeProxy(proxyName: String): IProxy?
+    fun removeProxy(proxyName: String): IProxy<*>?
 
     /**
      * Check if a Proxy is registered.

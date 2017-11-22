@@ -10,7 +10,7 @@ open class Model(private var multitonKey: String) : IModel {
     /**
      * Mapping of proxyNames to IProxy instances.
      */
-    private var proxyMap: MutableMap<String, IProxy> = mutableMapOf()
+    private var proxyMap: MutableMap<String, IProxy<*>> = mutableMapOf()
 
     companion object {
         private var instanceMap: MutableMap<String, Model> = mutableMapOf()
@@ -66,7 +66,7 @@ open class Model(private var multitonKey: String) : IModel {
      * @param proxy
      * an `Proxy` to be held by the `Model`.
      */
-    override fun registerProxy(proxy: IProxy) {
+    override fun registerProxy(proxy: IProxy<*>) {
         proxy.initializeNotifier(multitonKey)
         this.proxyMap.put(proxy.proxyName, proxy)
         proxy.onRegister()
@@ -78,7 +78,7 @@ open class Model(private var multitonKey: String) : IModel {
      * @param proxyName
      * name of the `Proxy` instance to be removed.
      */
-    override fun removeProxy(proxyName: String): IProxy {
+    override fun removeProxy(proxyName: String): IProxy<*> {
         val proxy = this.proxyMap[proxyName] as IProxy
         proxy.let {
             this.proxyMap.remove(proxyName)
@@ -94,7 +94,7 @@ open class Model(private var multitonKey: String) : IModel {
      * @return the `Proxy` instance previously registered with the
      * given `proxyName`.
      */
-    override fun retrieveProxy(proxy: String): IProxy {
+    override fun retrieveProxy(proxy: String): IProxy<*> {
         return this.proxyMap[proxy] as IProxy
     }
 

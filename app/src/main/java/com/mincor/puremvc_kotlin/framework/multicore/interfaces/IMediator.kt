@@ -1,11 +1,13 @@
 package com.mincor.puremvc_kotlin.framework.multicore.interfaces
 
+import android.view.View
+
 /**
  * Created by a.minkin on 21.11.2017.
  */
 interface IMediator : INotifier {
     val mediatorName: String
-    val viewComponent: Any?
+    val viewComponent: View?
     /**
      * List `INotification` interests.
      *

@@ -31,6 +31,9 @@ package com.mincor.puremvc_kotlin.framework.multicore.interfaces
  * @see  INotification
  */
 interface INotifier {
+
+    // The Multiton Key for this app
+    var multitonKey: String?
     /**
      * Send a `INotification`.
      *
@@ -58,5 +61,7 @@ interface INotifier {
      *
      * @param key the multitonKey for this INotifier to use
      */
-    fun initializeNotifier(key: String)
+    fun initializeNotifier(key: String) {
+        multitonKey = key
+    }
 }

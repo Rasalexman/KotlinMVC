@@ -10,7 +10,7 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notificat
 /**
  * Created by a.minkin on 21.11.2017.
  */
-open class Facade(var multitonKey: String) : IFacade {
+open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
 
     /**
      * Reference to the Controller
@@ -29,6 +29,7 @@ open class Facade(var multitonKey: String) : IFacade {
 
 
     companion object {
+        val DEFAULT_KEY = "FACADE"
         private val instanceMap: MutableMap<String, Facade> = mutableMapOf()
 
         /**
@@ -69,7 +70,7 @@ open class Facade(var multitonKey: String) : IFacade {
 
     init {
         if (instanceMap[multitonKey] != null) throw RuntimeException(multitonKey + " Facade already constructed")
-        instanceMap.put(multitonKey, this)
+        instanceMap.put(multitonKey!!, this)
         initializeFacade()
     }
 
@@ -105,7 +106,7 @@ open class Facade(var multitonKey: String) : IFacade {
      *
      */
     protected open fun initializeController() {
-        this.controller = this.controller?:Controller.getInstance(multitonKey)
+        this.controller = this.controller?:Controller.getInstance(multitonKey!!)
     }
 
     /**
@@ -133,7 +134,7 @@ open class Facade(var multitonKey: String) : IFacade {
     </P> *
      */
     protected open fun initializeModel() {
-        this.model = this.model?:Model.getInstance(multitonKey)
+        this.model = this.model?:Model.getInstance(multitonKey!!)
     }
 
     /**
@@ -161,7 +162,7 @@ open class Facade(var multitonKey: String) : IFacade {
     </P> *
      */
     protected open fun initializeView() {
-        this.view = this.view?:View.getInstance(multitonKey)
+        this.view = this.view?:View.getInstance(multitonKey!!)
     }
 
     /**
@@ -214,7 +215,7 @@ open class Facade(var multitonKey: String) : IFacade {
      * the name of the `IProxy` instance to be
      * registered with the `Model`.
      */
-    override fun registerProxy(proxy: IProxy) {
+    override fun registerProxy(proxy: IProxy<*>) {
         this.model!!.registerProxy(proxy)
     }
 
@@ -237,7 +238,7 @@ open class Facade(var multitonKey: String) : IFacade {
      * `Model`.
      * @return the `IProxy` that was removed from the `Model`
      */
-    override fun removeProxy(proxyName: String): IProxy? {
+    override fun removeProxy(proxyName: String): IProxy<*>? {
         return this.model?.removeProxy(proxyName)
     }
 
@@ -280,7 +281,7 @@ open class Facade(var multitonKey: String) : IFacade {
      * @return the `IProxy` instance previously registered with the
      * given `proxyName`.
      */
-    override fun retrieveProxy(proxyName: String): IProxy? {
+    override fun retrieveProxy(proxyName: String): IProxy<*>? {
         return this.model?.retrieveProxy(proxyName)
     }
 
