@@ -1,5 +1,7 @@
 package com.mincor.puremvc_kotlin.framework.multicore.patterns.facade
 
+import android.app.Activity
+import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.framework.multicore.core.controller.Controller
 import com.mincor.puremvc_kotlin.framework.multicore.core.model.Model
 import com.mincor.puremvc_kotlin.framework.multicore.core.view.View
@@ -86,6 +88,15 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
         initializeModel()
         initializeController()
         initializeView()
+    }
+
+
+    /**
+     * Attach current instance of Activity to Facade core
+     * Only one core can has one attached activity
+     */
+    override fun attachActivity(activity: Activity, container: ViewGroup) {
+
     }
 
     /**

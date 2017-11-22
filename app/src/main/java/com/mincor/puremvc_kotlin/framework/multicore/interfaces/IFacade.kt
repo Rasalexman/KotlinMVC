@@ -1,9 +1,20 @@
 package com.mincor.puremvc_kotlin.framework.multicore.interfaces
 
+import android.app.Activity
+import android.view.ViewGroup
+
 /**
  * Created by a.minkin on 21.11.2017.
  */
 interface IFacade : INotifier {
+
+    /***
+     * Attach main Activity class to current Facade Core
+     * @param activity - activity for attachment and lifecyrcle handled
+     * @param container - container for add/remove ui
+     */
+    fun attachActivity(activity: Activity, container:ViewGroup)
+
 
     /**
      * Register an `IProxy` with the `Model` by name.
