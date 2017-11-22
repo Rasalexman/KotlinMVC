@@ -69,7 +69,6 @@ open class Facade(var multitonKey: String) : IFacade {
 
     init {
         if (instanceMap[multitonKey] != null) throw RuntimeException(multitonKey + " Facade already constructed")
-        initializeNotifier(multitonKey)
         instanceMap.put(multitonKey, this)
         initializeFacade()
     }
@@ -106,10 +105,7 @@ open class Facade(var multitonKey: String) : IFacade {
      *
      */
     protected open fun initializeController() {
-        if (this.controller != null) {
-            return
-        }
-        this.controller = Controller.getInstance(multitonKey)
+        this.controller = this.controller?:Controller.getInstance(multitonKey)
     }
 
     /**
@@ -137,10 +133,7 @@ open class Facade(var multitonKey: String) : IFacade {
     </P> *
      */
     protected open fun initializeModel() {
-        if (this.model != null) {
-            return
-        }
-        this.model = Model.getInstance(multitonKey)
+        this.model = this.model?:Model.getInstance(multitonKey)
     }
 
     /**
@@ -168,10 +161,7 @@ open class Facade(var multitonKey: String) : IFacade {
     </P> *
      */
     protected open fun initializeView() {
-        if (this.view != null) {
-            return
-        }
-        this.view = View.getInstance(multitonKey)
+        this.view = this.view?:View.getInstance(multitonKey)
     }
 
     /**
