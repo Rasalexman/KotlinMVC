@@ -1,10 +1,8 @@
 package com.mincor.puremvc_kotlin.framework.multicore.core.view
 
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IView
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IMediator
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IObserver
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IFunction
+import android.app.Activity
+import android.view.ViewGroup
+import com.mincor.puremvc_kotlin.framework.multicore.interfaces.*
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
 
 
@@ -18,6 +16,21 @@ open class View(var multitonKey: String) : IView {
     private val observerMap: MutableMap<String, MutableList<IObserver>> = mutableMapOf()
     private val mediatorMap: MutableMap<String, IMediator> = mutableMapOf()
 
+    // List of current added mediators on the screen
+    private val mediatorBackStack: MutableList<IMediator> = mutableListOf()
+    // Current showing mediator
+    private var currentShowingMediator: IMediator? = null
+
+    /**
+     * Reference to the Activity attached on core
+     */
+    var currentActivity: Activity? = null
+
+    /**
+     * Instance of ui container
+     */
+    var currentContainer: ViewGroup? = null
+
     companion object {
         private val instanceMap: MutableMap<String, View> = mutableMapOf()
         /**
@@ -27,7 +40,7 @@ open class View(var multitonKey: String) : IView {
          */
         @Synchronized
         fun getInstance(key: String): View {
-            return instanceMap.getOrPut(key){View(key)}
+            return instanceMap.getOrPut(key) { View(key) }
         }
 
         /**
@@ -52,7 +65,7 @@ open class View(var multitonKey: String) : IView {
      * Factory method `View.getInstance( multitonKey )`
     </P> */
     init {
-        instanceMap.getOrPut(multitonKey){this}
+        instanceMap.getOrPut(multitonKey) { this }
         initializeView()
     }
 
@@ -143,9 +156,9 @@ open class View(var multitonKey: String) : IView {
      */
     override fun registerMediator(mediator: IMediator) {
         // Register the Mediator for retrieval by name
-        val currentMediator = this.mediatorMap.getOrPut(mediator.mediatorName){mediator}
+        val currentMediator = this.mediatorMap.getOrPut(mediator.mediatorName) { mediator }
         // Only fresh mediators can register observers
-        currentMediator.multitonKey?:let {
+        currentMediator.multitonKey ?: let {
             currentMediator.initializeNotifier(multitonKey)
             // Get Notification interests, if any.
             val noteInterests = currentMediator.listNotificationInterests()
@@ -166,7 +179,6 @@ open class View(var multitonKey: String) : IView {
                     registerObserver(s, observer)
                 }
             }
-            currentMediator.onCreateView()
         }
         currentMediator.onRegister()
     }
@@ -182,7 +194,7 @@ open class View(var multitonKey: String) : IView {
      * the `Observer` to register
      */
     override fun registerObserver(noteName: String, observer: IObserver) {
-        val observers = this.observerMap.getOrPut(noteName){mutableListOf()}
+        val observers = this.observerMap.getOrPut(noteName) { mutableListOf() }
         observers.add(observer)
     }
 
@@ -196,7 +208,7 @@ open class View(var multitonKey: String) : IView {
         // Retrieve the named mediator
         val mediator = mediatorMap[mediatorName]
 
-        mediator?.let{
+        mediator?.let {
             // for every notification this mediator is interested in...
             val interests = it.listNotificationInterests()
             // remove the observer linking the mediator
@@ -221,8 +233,50 @@ open class View(var multitonKey: String) : IView {
      * @return the `Mediator` instance previously registered with
      * the given `mediatorName`.
      */
-    override fun retrieveMediator(mediatorName: String): IMediator {
-        return this.mediatorMap[mediatorName] as IMediator
+    override fun retrieveMediator(mediatorName: String): IMediator = this.mediatorMap[mediatorName] as IMediator
+
+    /**
+     * Show current selected mediator
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to show on the screen
+     *
+     * @param popLast
+     * flag that indicates need to remove last showing from backstack
+     */
+    override fun showMediator(mediatorName: String, popLast: Boolean) {
+        // hide last mediator
+        currentShowingMediator?.let {
+            hideMediator(it.mediatorName, popLast)
+        }
+        // Retrieve the named mediator
+        currentShowingMediator = mediatorMap[mediatorName]
+        currentShowingMediator!!.let {
+            // make sure that we have an actual viewComponent
+            it.viewComponent?:it.onCreateView()
+            // add view component to the container
+            currentContainer?.addView(it.viewComponent)
+            // add to backstack
+            mediatorBackStack.add(it)
+        }
+    }
+
+    /**
+     * Hide current mediator by name
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to be removed from the screen
+     *
+     * @param popIt
+     * Indicates that is need to be removed from backstack
+     */
+    override fun hideMediator(mediatorName: String, popIt: Boolean) {
+        mediatorMap[mediatorName]?.let {
+            currentContainer?.removeView(it.viewComponent)
+            if (popIt) {
+                mediatorBackStack.removeAt(mediatorBackStack.lastIndexOf(it))
+            }
+        }
     }
 
     /**
@@ -231,7 +285,5 @@ open class View(var multitonKey: String) : IView {
      * @param mediatorName
      * @return whether a Mediator is registered with the given `mediatorName`.
      */
-    override fun hasMediator(mediatorName: String): Boolean {
-        return mediatorMap.containsKey(mediatorName)
-    }
+    override fun hasMediator(mediatorName: String): Boolean = mediatorMap.containsKey(mediatorName)
 }

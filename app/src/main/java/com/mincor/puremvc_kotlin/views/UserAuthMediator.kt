@@ -2,8 +2,6 @@ package com.mincor.puremvc_kotlin.views
 
 import android.support.v4.content.ContextCompat
 import android.text.InputType
-import android.view.View
-import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.mincor.puremvc_kotlin.R
@@ -30,7 +28,7 @@ class UserAuthMediator : Mediator(NAME) {
     var password = ""
 
     override fun onCreateView() {
-        viewComponent = UserAuthUI().createView(AnkoContext.create(container.context, this))
+        viewComponent = UserAuthUI().createView(AnkoContext.create(getFacade().activity, this))
     }
 
     fun nameUpdated(newName: String) {
@@ -53,9 +51,8 @@ class UserAuthMediator : Mediator(NAME) {
        sendNotification(AppFacade.AUTH, arrayOf(name, password))
     }
 
-    override fun listNotificationInterests(): Array<String> {
-        return arrayOf(UserProxy.NOTIFICATION_AUTH_COMPLETE, UserProxy.NOTIFICATION_AUTH_FAILED)
-    }
+    override fun listNotificationInterests(): Array<String> =
+            arrayOf(UserProxy.NOTIFICATION_AUTH_COMPLETE, UserProxy.NOTIFICATION_AUTH_FAILED)
 
     override fun handleNotification(notification: INotification) {
         when(notification.name){
@@ -63,7 +60,7 @@ class UserAuthMediator : Mediator(NAME) {
                 getFacade().removeMediator(NAME)
                 getFacade().registerMediator(UserListsMediator())
             }
-            UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(container.context, "Login Failed", Toast.LENGTH_SHORT).show()
+            UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(getFacade().activity, "Login Failed", Toast.LENGTH_SHORT).show()
         }
     }
 

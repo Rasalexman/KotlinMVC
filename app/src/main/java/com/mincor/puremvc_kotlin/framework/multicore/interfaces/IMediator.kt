@@ -12,15 +12,6 @@ interface IMediator : INotifier {
     var viewComponent: View?
 
     /**
-     * Container for current UI
-     */
-    val container:ViewGroup
-    /**
-     * Current Activity for core
-     */
-    val activity:Activity
-
-    /**
      * List `INotification` interests.
      *
      * @return an `Array` of the `INotification` names
@@ -50,4 +41,15 @@ interface IMediator : INotifier {
      * Called by the View when the Mediator is removed.
      */
     fun onRemove()
+
+    /**
+     *
+     */
+    fun show(popLast:Boolean)
+
+    /**
+     *
+     */
+    fun hide(popIt:Boolean)
+
 }

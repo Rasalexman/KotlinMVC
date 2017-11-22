@@ -32,7 +32,7 @@ package com.mincor.puremvc_kotlin.framework.multicore.interfaces
  */
 interface INotifier {
 
-    // The Multiton Key for this app
+    // The Multiton Key for this core
     var multitonKey: String?
     /**
      * Send a `INotification`.

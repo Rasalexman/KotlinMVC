@@ -1,8 +1,6 @@
 package com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator
 
-import android.app.Activity
 import android.view.View
-import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IMediator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
@@ -14,8 +12,6 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
 abstract class Mediator(override val mediatorName: String) : Notifier(), IMediator {
 
     override var viewComponent: View? = null
-    override val container: ViewGroup get() = getFacade().currentContainer!!
-    override val activity: Activity get() =  getFacade().currentActivity!!
 
     /**
      * Handle `INotification`s.
@@ -41,15 +37,20 @@ abstract class Mediator(override val mediatorName: String) : Notifier(), IMediat
     /**
      * Called by the View when the Mediator is registered.
      */
-    override fun onRegister() {
-        viewComponent?.parent?:container.addView(viewComponent)
-    }
+    override fun onRegister() {}
 
     /**
      * Called by the View when the Mediator is removed.
      */
     override fun onRemove() {
-        container.removeView(viewComponent)
         viewComponent = null
+    }
+
+    override fun show(popLast:Boolean) {
+        getFacade().showMeditator(mediatorName, popLast)
+    }
+
+    override fun hide(popIt:Boolean) {
+        getFacade().hideMediator(mediatorName, popIt)
     }
 }

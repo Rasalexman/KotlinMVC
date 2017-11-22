@@ -67,6 +67,28 @@ interface IView {
     fun retrieveMediator(mediatorName: String): IMediator
 
     /**
+     * Show current selected mediator
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to show on the screen
+     *
+     * @param popLast
+     * flag that indicates need to remove last showing from backstack
+     */
+    fun showMediator(mediatorName: String, popLast:Boolean)
+
+    /**
+     * Hide current mediator by name
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to be removed from the screen
+     *
+     * @param popIt
+     * Indicates that is need to be removed from backstack
+     */
+    fun hideMediator(mediatorName: String, popIt:Boolean)
+
+    /**
      * Remove an `IMediator` from the `View`.
      *
      * @param mediatorName

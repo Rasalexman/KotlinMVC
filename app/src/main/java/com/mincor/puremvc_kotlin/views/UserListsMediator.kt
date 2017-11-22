@@ -18,7 +18,7 @@ class UserListsMediator : Mediator(NAME) {
     }
 
     override fun onCreateView() {
-        viewComponent = UserListUI().createView(AnkoContext.Companion.create(container.context, this))
+        viewComponent = UserListUI().createView(AnkoContext.Companion.create(getFacade().activity, this))
     }
 
     inner class UserListUI : AnkoComponent<UserListsMediator> {
