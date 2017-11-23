@@ -248,7 +248,7 @@ open class View(var multitonKey: String) : IView {
         currentShowingMediator = mediatorMap[mediatorName]
         currentShowingMediator!!.let {
             // make sure that we have an actual viewComponent if not recreate it
-            it.viewComponent?:it.onCreateView()
+            it.viewComponent ?: it.onCreateView()
             // add view component to the container
             currentContainer?.addView(it.viewComponent)
             // add to backstack
@@ -264,7 +264,7 @@ open class View(var multitonKey: String) : IView {
      */
     override fun showLastOrExistMediator(mediatorName: String) {
         val lastMediator = mediatorBackStack.lastOrNull()
-        val lastMediatorName = lastMediator?.mediatorName?:mediatorName
+        val lastMediatorName = lastMediator?.mediatorName ?: mediatorName
         showMediator(lastMediatorName, false)
     }
 
@@ -286,6 +286,26 @@ open class View(var multitonKey: String) : IView {
             // if flag `true` we remove mediator from backstack
             if (popIt) {
                 mediatorBackStack.removeAt(mediatorBackStack.lastIndexOf(it))
+            }
+        }
+    }
+
+    /**
+     * Hide current mediator by the name and remove it from backstack then show last added mediator at backstack
+     * If there is no mediator in backstack - there is no action will be (only if backstack size > 1)
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to be removed from the screen
+     */
+    override fun popMediator(mediatorName: String) {
+        val mediatorToPop = mediatorMap[mediatorName]
+        mediatorToPop?.let {
+            // if mediator to pop equal current showing mediator and backstack has more than one mediator
+            if (it == currentShowingMediator && mediatorBackStack.size > 1) {
+                // hide selected mediator and remove it from backstack
+                it.hide(true)
+                // get last added mediator from backstack and show it on the screen
+                mediatorBackStack.last().show()
             }
         }
     }

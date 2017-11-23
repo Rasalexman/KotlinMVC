@@ -97,6 +97,15 @@ interface IView {
     fun hideMediator(mediatorName: String, popIt:Boolean)
 
     /**
+     * Hide current mediator by the name and remove it from backstack then show last added mediator at backstack
+     * If there is no mediator in backstack there is no action will be (only if backstack size > 1)
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to be removed from the screen
+     */
+    fun popMediator(mediatorName: String)
+
+    /**
      * Remove an `IMediator` from the `View`.
      *
      * @param mediatorName

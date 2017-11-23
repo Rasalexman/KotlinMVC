@@ -3,7 +3,6 @@ package com.mincor.puremvc_kotlin.views
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.mincor.puremvc_kotlin.R
-import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.ToolbarMediator
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.recyclerview.v7.recyclerView

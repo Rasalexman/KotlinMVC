@@ -17,7 +17,7 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notificat
 open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
 
     val container: ViewGroup get() = view.currentContainer!!
-    val activity: Activity get() =  view.currentActivity!!
+    val activity: Activity get() = view.currentActivity!!
 
     /**
      * Reference to the Controller
@@ -53,7 +53,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
          * @return the Multiton instance of the Facade
          */
         @Synchronized
-        fun getInstance(key: String): Facade = instanceMap.getOrPut(key){Facade(key)}
+        fun getInstance(key: String): Facade = instanceMap.getOrPut(key) { Facade(key) }
 
         /**
          * Check if a Core is registered or not.
@@ -108,28 +108,33 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
         // attached container for UI
         view.currentContainer = container
         // current activity for support and creating UI
-        view.currentActivity?:let {
+        view.currentActivity ?: let {
             activity.application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(p0: Activity?, p1: Bundle?) {
                     print("onActivityCreated")
                     sendNotification(ACTIVITY_CREATED)
                 }
+
                 override fun onActivityStarted(p0: Activity?) {
                     print("onActivityStarted")
                     sendNotification(ACTIVITY_STARTED)
                 }
+
                 override fun onActivityResumed(p0: Activity?) {
                     print("onActivityResumed")
                     sendNotification(ACTIVITY_RESUMED)
                 }
+
                 override fun onActivityPaused(p0: Activity?) {
                     print("onActivityPaused")
                     sendNotification(ACTIVITY_PAUSED)
                 }
+
                 override fun onActivityStopped(p0: Activity?) {
                     print("onActivityStopped")
                     sendNotification(ACTIVITY_STOPPED)
                 }
+
                 override fun onActivityDestroyed(p0: Activity?) {
                     print("onActivityDestroyed")
                     sendNotification(ACTIVITY_DESTROYED)
@@ -138,6 +143,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
                     // clear reference
                     view.currentContainer = null
                 }
+
                 override fun onActivitySaveInstanceState(p0: Activity?, p1: Bundle?) {
 
                 }
@@ -322,6 +328,17 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
     }
 
     /**
+     * Hide current mediator by the name and remove it from backstack then show last added mediator at backstack
+     * If there is no mediator in backstack - there is no action will be (only if backstack size > 1)
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to be removed from the screen
+     */
+    override fun popMediator(mediatorName: String) {
+        view.popMediator(mediatorName)
+    }
+
+    /**
      * Remove an `IProxy` from the `Model` by name.
      *
      * @param proxyName
@@ -376,7 +393,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * @param body the body of the notification (optional)
      * @param type the type of the notification (optional)
     </P>
-    */
+     */
     override fun sendNotification(notificationName: String, body: Any?, type: String?) {
         notifyObservers(Notification(notificationName, body, type))
     }

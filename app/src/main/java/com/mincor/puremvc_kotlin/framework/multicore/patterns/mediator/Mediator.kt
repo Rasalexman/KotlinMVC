@@ -44,11 +44,25 @@ abstract class Mediator(override val mediatorName: String) : Notifier(), IMediat
         hide(true)
     }
 
-    override fun show(popLast:Boolean) {
+    /**
+     * Add current mediator to view stage
+     */
+    override fun show(popLast: Boolean) {
         getFacade().showMeditator(mediatorName, popLast)
     }
 
-    override fun hide(popIt:Boolean) {
+    /**
+     * Remove current mediator from view stage
+     */
+    override fun hide(popIt: Boolean) {
         getFacade().hideMediator(mediatorName, popIt)
+    }
+
+    /**
+     * Remove current mediator from view stage and backstack
+     * Then show the last added to backstack mediator on the view stage
+     */
+    override fun popToBack() {
+        getFacade().popMediator(mediatorName)
     }
 }
