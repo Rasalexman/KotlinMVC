@@ -16,27 +16,35 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notificat
  */
 open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
 
-    val container: ViewGroup get() = view?.currentContainer!!
-    val activity: Activity get() =  view?.currentActivity!!
+    val container: ViewGroup get() = view.currentContainer!!
+    val activity: Activity get() =  view.currentActivity!!
 
     /**
      * Reference to the Controller
      */
-    protected var controller: Controller? = null
+    private lateinit var controller: Controller
 
     /**
      * Reference to the Model
      */
-    protected var model: Model? = null
+    private lateinit var model: Model
 
     /**
      * Reference to the View
      */
-    protected var view: View? = null
+    private lateinit var view: View
 
 
     companion object {
         val DEFAULT_KEY = "FACADE"
+
+        val ACTIVITY_CREATED = "created"
+        val ACTIVITY_STARTED = "started"
+        val ACTIVITY_RESUMED = "resumed"
+        val ACTIVITY_PAUSED = "paused"
+        val ACTIVITY_STOPPED = "stopped"
+        val ACTIVITY_DESTROYED = "destroyed"
+
         private val instanceMap: MutableMap<String, Facade> = mutableMapOf()
 
         /**
@@ -45,9 +53,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
          * @return the Multiton instance of the Facade
          */
         @Synchronized
-        fun getInstance(key: String): Facade {
-            return instanceMap.getOrPut(key){Facade(key)}
-        }
+        fun getInstance(key: String): Facade = instanceMap.getOrPut(key){Facade(key)}
 
         /**
          * Check if a Core is registered or not.
@@ -56,9 +62,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
          * @return whether a Core is registered with the given `key`.
          */
         @Synchronized
-        fun hasCore(key: String): Boolean {
-            return instanceMap.containsKey(key)
-        }
+        fun hasCore(key: String): Boolean = instanceMap.containsKey(key)
 
         /**
          * Remove a Core
@@ -101,42 +105,45 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * Only one core can has one attached activity
      */
     override fun attachActivity(activity: Activity, container: ViewGroup) {
-        view?.currentContainer = container
-
-        view?.currentActivity?:let {
+        // attached container for UI
+        view.currentContainer = container
+        // current activity for support and creating UI
+        view.currentActivity?:let {
             activity.application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
                 override fun onActivityCreated(p0: Activity?, p1: Bundle?) {
                     print("onActivityCreated")
+                    sendNotification(ACTIVITY_CREATED)
                 }
-
                 override fun onActivityStarted(p0: Activity?) {
                     print("onActivityStarted")
+                    sendNotification(ACTIVITY_STARTED)
                 }
-
                 override fun onActivityResumed(p0: Activity?) {
                     print("onActivityResumed")
+                    sendNotification(ACTIVITY_RESUMED)
                 }
-
                 override fun onActivityPaused(p0: Activity?) {
                     print("onActivityPaused")
+                    sendNotification(ACTIVITY_PAUSED)
                 }
-
                 override fun onActivityStopped(p0: Activity?) {
                     print("onActivityStopped")
+                    sendNotification(ACTIVITY_STOPPED)
                 }
-
                 override fun onActivityDestroyed(p0: Activity?) {
                     print("onActivityDestroyed")
-                    view?.currentContainer?.removeAllViews()
-                    view?.currentContainer = null
+                    sendNotification(ACTIVITY_DESTROYED)
+                    // we dont need current container anymore cause our activity is destroyed
+                    view.currentContainer?.removeAllViews()
+                    // clear reference
+                    view.currentContainer = null
                 }
-
                 override fun onActivitySaveInstanceState(p0: Activity?, p1: Bundle?) {
 
                 }
             })
 
-            view?.currentActivity = activity
+            view.currentActivity = activity
         }
     }
 
@@ -158,7 +165,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      *
      */
     protected open fun initializeController() {
-        this.controller = this.controller?:Controller.getInstance(multitonKey!!)
+        this.controller = Controller.getInstance(multitonKey!!)
     }
 
     /**
@@ -186,7 +193,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
     </P> *
      */
     protected open fun initializeModel() {
-        this.model = this.model?:Model.getInstance(multitonKey!!)
+        this.model = Model.getInstance(multitonKey!!)
     }
 
     /**
@@ -214,7 +221,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
     </P> *
      */
     protected open fun initializeView() {
-        this.view = this.view?:View.getInstance(multitonKey!!)
+        this.view = View.getInstance(multitonKey!!)
     }
 
     /**
@@ -228,7 +235,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * an instance of the `ICommand`
      */
     override fun registerCommand(noteName: String, commandClassRef: ICommand) {
-        this.controller?.registerCommand(noteName, commandClassRef)
+        this.controller.registerCommand(noteName, commandClassRef)
     }
 
     /**
@@ -237,7 +244,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * @param notificationName the name of the `INotification` to remove the `ICommand` mapping for
      */
     override fun removeCommand(notificationName: String) {
-        this.controller?.removeCommand(notificationName)
+        this.controller.removeCommand(notificationName)
     }
 
     /**
@@ -246,7 +253,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * @param notificationName
      * @return whether a Command is currently registered for the given `notificationName`.
      */
-    override fun hasCommand(notificationName: String): Boolean = controller?.hasCommand(notificationName)?:false
+    override fun hasCommand(notificationName: String): Boolean = controller.hasCommand(notificationName)
 
     /**
      * Register a `IMediator` with the `View`.
@@ -255,7 +262,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * the name to associate with this `IMediator`
      */
     override fun registerMediator(mediator: IMediator) {
-        this.view?.registerMediator(mediator)
+        this.view.registerMediator(mediator)
     }
 
     /**
@@ -266,7 +273,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * registered with the `Model`.
      */
     override fun registerProxy(proxy: IProxy<*>) {
-        this.model?.registerProxy(proxy)
+        this.model.registerProxy(proxy)
     }
 
     /**
@@ -276,7 +283,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * name of the `IMediator` to be removed.
      * @return the `IMediator` that was removed from the `View`
      */
-    override fun removeMediator(mediatorName: String): IMediator? = this.view?.removeMediator(mediatorName)
+    override fun removeMediator(mediatorName: String): IMediator? = this.view.removeMediator(mediatorName)
 
     /**
      * Show current selected mediator
@@ -288,7 +295,17 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * flag that indicates need to remove last showing from backstack
      */
     override fun showMeditator(mediatorName: String, popLast: Boolean) {
-        view?.showMediator(mediatorName, popLast)
+        view.showMediator(mediatorName, popLast)
+    }
+
+    /**
+     * Show last added IMediator from backstack. If there is no mediator in backstack show the one passed by name
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to show on the screen
+     */
+    override fun showLastOrExistMediator(mediatorName: String) {
+        view.showLastOrExistMediator(mediatorName)
     }
 
     /**
@@ -301,7 +318,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * Indicates that is need to be removed from backstack
      */
     override fun hideMediator(mediatorName: String, popIt: Boolean) {
-        view?.hideMediator(mediatorName, popIt)
+        view.hideMediator(mediatorName, popIt)
     }
 
     /**
@@ -312,7 +329,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * `Model`.
      * @return the `IProxy` that was removed from the `Model`
      */
-    override fun removeProxy(proxyName: String): IProxy<*>? = this.model?.removeProxy(proxyName)
+    override fun removeProxy(proxyName: String): IProxy<*> = this.model.removeProxy(proxyName)
 
     /**
      * Check if a Proxy is registered.
@@ -320,7 +337,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * @param proxyName
      * @return whether a Proxy is currently registered with the given `proxyName`.
      */
-    override fun hasProxy(proxyName: String): Boolean = model?.hasProxy(proxyName)?:false
+    override fun hasProxy(proxyName: String): Boolean = model.hasProxy(proxyName)
 
     /**
      * Check if a Mediator is registered or not.
@@ -328,7 +345,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * @param mediatorName
      * @return whether a Mediator is registered with the given `mediatorName`.
      */
-    override fun hasMediator(mediatorName: String): Boolean = view?.hasMediator(mediatorName)?:false
+    override fun hasMediator(mediatorName: String): Boolean = view.hasMediator(mediatorName)
 
     /**
      * Retrieve an `IMediator` from the `View`.
@@ -337,7 +354,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * @return the `IMediator` previously registered with the given
      * `mediatorName`.
      */
-    override fun retrieveMediator(mediatorName: String): IMediator? = this.view?.retrieveMediator(mediatorName)
+    override fun retrieveMediator(mediatorName: String): IMediator? = this.view.retrieveMediator(mediatorName)
 
     /**
      * Retrieve an `IProxy` from the `Model` by name.
@@ -347,7 +364,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * @return the `IProxy` instance previously registered with the
      * given `proxyName`.
      */
-    override fun retrieveProxy(proxyName: String): IProxy<*>? = this.model?.retrieveProxy(proxyName)
+    override fun retrieveProxy(proxyName: String): IProxy<*>? = this.model.retrieveProxy(proxyName)
 
     /**
      * Create and send an `INotification`.
@@ -372,7 +389,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * notify observers of.
      */
     private fun notifyObservers(notification: INotification) {
-        this.view?.notifyObservers(notification)
+        this.view.notifyObservers(notification)
     }
 
     override fun initializeNotifier(key: String) {}

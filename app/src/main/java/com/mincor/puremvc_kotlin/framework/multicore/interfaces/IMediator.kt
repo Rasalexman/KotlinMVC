@@ -1,8 +1,6 @@
 package com.mincor.puremvc_kotlin.framework.multicore.interfaces
 
-import android.app.Activity
 import android.view.View
-import android.view.ViewGroup
 
 /**
  * Created by a.minkin on 21.11.2017.

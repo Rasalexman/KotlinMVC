@@ -3,7 +3,7 @@ package com.mincor.puremvc_kotlin.views
 import android.support.v4.content.ContextCompat
 import android.view.View
 import com.mincor.puremvc_kotlin.R
-import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.Mediator
+import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.ToolbarMediator
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.recyclerview.v7.recyclerView
@@ -11,7 +11,7 @@ import org.jetbrains.anko.recyclerview.v7.recyclerView
 /**
  * Created by a.minkin on 22.11.2017.
  */
-class UserListsMediator : Mediator(NAME) {
+class UserListsMediator : ToolbarMediator(NAME) {
 
     companion object {
         val NAME = "user_list_mediator"
@@ -19,6 +19,8 @@ class UserListsMediator : Mediator(NAME) {
 
     override fun onCreateView() {
         viewComponent = UserListUI().createView(AnkoContext.Companion.create(getFacade().activity, this))
+        setActionBar(toolBar!!)
+        setHomeButtonEnable()
     }
 
     inner class UserListUI : AnkoComponent<UserListsMediator> {
@@ -26,7 +28,7 @@ class UserListsMediator : Mediator(NAME) {
             verticalLayout {
                 lparams(matchParent, matchParent)
 
-                toolbar {
+                toolBar = toolbar {
                     setTitleTextColor(ContextCompat.getColor(ctx, android.R.color.white))
                     title = "User List"
                     backgroundResource = R.color.colorPrimary

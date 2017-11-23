@@ -30,9 +30,7 @@ abstract class Mediator(override val mediatorName: String) : Notifier(), IMediat
      *
      * @return String[] the list of `INotification` names
      */
-    override fun listNotificationInterests(): Array<String> {
-        return arrayOf()
-    }
+    override fun listNotificationInterests(): Array<String> = arrayOf()
 
     /**
      * Called by the View when the Mediator is registered.
@@ -43,7 +41,7 @@ abstract class Mediator(override val mediatorName: String) : Notifier(), IMediat
      * Called by the View when the Mediator is removed.
      */
     override fun onRemove() {
-        viewComponent = null
+        hide(true)
     }
 
     override fun show(popLast:Boolean) {

@@ -20,9 +20,7 @@ open class Model(private var multitonKey: String) : IModel {
          * @return the instance for this Multiton key
          */
         @Synchronized
-        fun getInstance(key: String): Model {
-            return instanceMap.getOrPut(key){ Model(key) }
-        }
+        fun getInstance(key: String): Model = instanceMap.getOrPut(key){ Model(key) }
 
         /**
          * Remove an IModel instance
@@ -94,9 +92,7 @@ open class Model(private var multitonKey: String) : IModel {
      * @return the `Proxy` instance previously registered with the
      * given `proxyName`.
      */
-    override fun retrieveProxy(proxy: String): IProxy<*> {
-        return this.proxyMap[proxy] as IProxy
-    }
+    override fun retrieveProxy(proxy: String): IProxy<*> = this.proxyMap[proxy] as IProxy
 
     /**
      * Check if a Proxy is registered
@@ -104,7 +100,5 @@ open class Model(private var multitonKey: String) : IModel {
      * @param proxyName
      * @return whether a Proxy is currently registered with the given `proxyName`.
      */
-    override fun hasProxy(proxyName: String): Boolean {
-        return proxyMap.containsKey(proxyName)
-    }
+    override fun hasProxy(proxyName: String): Boolean = proxyMap.containsKey(proxyName)
 }

@@ -78,6 +78,14 @@ interface IView {
     fun showMediator(mediatorName: String, popLast:Boolean)
 
     /**
+     * Show last added IMediator from backstack. If there is no mediator in backstack show the one passed by name
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to show on the screen
+     */
+    fun showLastOrExistMediator(mediatorName: String)
+
+    /**
      * Hide current mediator by name
      *
      * @param mediatorName

@@ -57,8 +57,7 @@ class UserAuthMediator : Mediator(NAME) {
     override fun handleNotification(notification: INotification) {
         when(notification.name){
             UserProxy.NOTIFICATION_AUTH_COMPLETE -> {
-                getFacade().removeMediator(NAME)
-                getFacade().registerMediator(UserListsMediator())
+                getFacade().retrieveMediator(UserListsMediator.NAME)?.show()
             }
             UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(getFacade().activity, "Login Failed", Toast.LENGTH_SHORT).show()
         }

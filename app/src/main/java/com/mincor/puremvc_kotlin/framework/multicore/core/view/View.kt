@@ -39,9 +39,7 @@ open class View(var multitonKey: String) : IView {
          * @return the Singleton instance of `View`
          */
         @Synchronized
-        fun getInstance(key: String): View {
-            return instanceMap.getOrPut(key) { View(key) }
-        }
+        fun getInstance(key: String): View = instanceMap.getOrPut(key) { View(key) }
 
         /**
          * Remove an IView instance
@@ -54,9 +52,8 @@ open class View(var multitonKey: String) : IView {
         }
     }
 
-
     /**
-     * Constructor.
+     * initialization
      *
      * <P>
      * This `IView` implementation is a Multiton,
@@ -246,19 +243,29 @@ open class View(var multitonKey: String) : IView {
      */
     override fun showMediator(mediatorName: String, popLast: Boolean) {
         // hide last mediator
-        currentShowingMediator?.let {
-            hideMediator(it.mediatorName, popLast)
-        }
+        currentShowingMediator?.hide(popLast)
         // Retrieve the named mediator
         currentShowingMediator = mediatorMap[mediatorName]
         currentShowingMediator!!.let {
-            // make sure that we have an actual viewComponent
+            // make sure that we have an actual viewComponent if not recreate it
             it.viewComponent?:it.onCreateView()
             // add view component to the container
             currentContainer?.addView(it.viewComponent)
             // add to backstack
             mediatorBackStack.add(it)
         }
+    }
+
+    /**
+     * Show last added IMediator from backstack. If there is no mediator in backstack show the one passed by name
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to show on the screen
+     */
+    override fun showLastOrExistMediator(mediatorName: String) {
+        val lastMediator = mediatorBackStack.lastOrNull()
+        val lastMediatorName = lastMediator?.mediatorName?:mediatorName
+        showMediator(lastMediatorName, false)
     }
 
     /**
@@ -272,7 +279,11 @@ open class View(var multitonKey: String) : IView {
      */
     override fun hideMediator(mediatorName: String, popIt: Boolean) {
         mediatorMap[mediatorName]?.let {
+            // remove viewComponent from ui layer
             currentContainer?.removeView(it.viewComponent)
+            // free the reference on viewComponent cause we dont need it anymore
+            it.viewComponent = null
+            // if flag `true` we remove mediator from backstack
             if (popIt) {
                 mediatorBackStack.removeAt(mediatorBackStack.lastIndexOf(it))
             }

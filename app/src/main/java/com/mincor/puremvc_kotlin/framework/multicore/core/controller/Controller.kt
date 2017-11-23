@@ -1,10 +1,10 @@
 package com.mincor.puremvc_kotlin.framework.multicore.core.controller
 
 import com.mincor.puremvc_kotlin.framework.multicore.core.view.View
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IController
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IFunction
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.ICommand
+import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IController
+import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IFunction
+import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
 
 open class Controller(private val multitonKey: String) : IController {
@@ -26,9 +26,7 @@ open class Controller(private val multitonKey: String) : IController {
          * @return the Multiton instance of `Controller`
          */
         @Synchronized
-        fun getInstance(key: String): Controller {
-            return instanceMap.getOrPut(key){Controller(key)}
-        }
+        fun getInstance(key: String): Controller = instanceMap.getOrPut(key){Controller(key)}
         /**
          * Remove an IController instance
          * @param key of IController instance to remove
@@ -112,7 +110,5 @@ open class Controller(private val multitonKey: String) : IController {
      * @param notificationName
      * @return whether a Command is currently registered for the given `notificationName`.
      */
-    override fun hasCommand(notificationName: String): Boolean {
-        return commandMap[notificationName] != null
-    }
+    override fun hasCommand(notificationName: String): Boolean = commandMap[notificationName] != null
 }

@@ -44,7 +44,7 @@ interface IFacade : INotifier {
      * the `IProxy` to remove from the
      * `Model`.
      */
-    fun removeProxy(proxyName: String): IProxy<*>?
+    fun removeProxy(proxyName: String): IProxy<*>
 
     /**
      * Check if a Proxy is registered.
@@ -125,6 +125,14 @@ interface IFacade : INotifier {
      * flag that indicates need to remove last showing from backstack
      */
     fun showMeditator(mediatorName: String, popLast:Boolean = false)
+
+    /**
+     * Show last added IMediator from backstack. If there is no mediator in backstack show the one passed by name
+     *
+     * @param mediatorName
+     * the name of the `IMediator` instance to show on the screen
+     */
+    fun showLastOrExistMediator(mediatorName: String)
 
     /**
      * Hide current mediator by name
