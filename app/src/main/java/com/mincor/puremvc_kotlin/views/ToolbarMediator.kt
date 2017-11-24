@@ -4,6 +4,7 @@ import android.support.v7.app.ActionBar
 import android.support.v7.widget.Toolbar
 import android.view.View
 import com.mincor.puremvc_kotlin.activity.log
+import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.common.IActionBarProvider
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.Mediator
@@ -42,7 +43,7 @@ abstract class ToolbarMediator(override val mediatorName: String) : Mediator(med
     override fun onClick(view: View) {
         log { "VIEW ID ${view.id}" }
         when (view.id) {
-            BACK_BUTTON_ID -> popToBack()
+            BACK_BUTTON_ID -> popToBack(LinearAnimator())
         }
     }
 
