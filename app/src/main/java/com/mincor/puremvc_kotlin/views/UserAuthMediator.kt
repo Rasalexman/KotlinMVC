@@ -9,6 +9,7 @@ import com.mincor.puremvc_kotlin.facades.AppFacade
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.Mediator
 import com.mincor.puremvc_kotlin.models.UserProxy
+import com.mincor.puremvc_kotlin.utils.Keyboards
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -48,14 +49,15 @@ class UserAuthMediator : Mediator(NAME) {
     }
 
     private fun onLoginClicked() {
-       sendNotification(AppFacade.AUTH, arrayOf(name, password))
+        Keyboards.hideKeyboard(viewComponent!!.context, viewComponent!!)
+        sendNotification(AppFacade.AUTH, arrayOf(name, password))
     }
 
     override fun listNotificationInterests(): Array<String> =
             arrayOf(UserProxy.NOTIFICATION_AUTH_COMPLETE, UserProxy.NOTIFICATION_AUTH_FAILED)
 
     override fun handleNotification(notification: INotification) {
-        when(notification.name){
+        when (notification.name) {
             UserProxy.NOTIFICATION_AUTH_COMPLETE -> {
                 getFacade().retrieveMediator(UserListsMediator.NAME)?.show()
             }
@@ -63,8 +65,8 @@ class UserAuthMediator : Mediator(NAME) {
         }
     }
 
-    inner class UserAuthUI : AnkoComponent<UserAuthMediator>{
-        override fun createView(ui: AnkoContext<UserAuthMediator>) = with(ui){
+    inner class UserAuthUI : AnkoComponent<UserAuthMediator> {
+        override fun createView(ui: AnkoContext<UserAuthMediator>) = with(ui) {
             verticalLayout {
                 lparams(matchParent, matchParent)
                 toolbar {

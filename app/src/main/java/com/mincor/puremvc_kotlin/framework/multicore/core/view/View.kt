@@ -2,6 +2,7 @@ package com.mincor.puremvc_kotlin.framework.multicore.core.view
 
 import android.app.Activity
 import android.view.ViewGroup
+import com.mincor.puremvc_kotlin.activity.log
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.*
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
 
@@ -251,8 +252,10 @@ open class View(var multitonKey: String) : IView {
             it.viewComponent ?: it.onCreateView()
             // add view component to the container
             currentContainer?.addView(it.viewComponent)
-            // add to backstack
-            mediatorBackStack.add(it)
+            // add to backstack if we don't have any mediators in it or last mediator does not equal the same mediator as we showing on the screen
+            if(mediatorBackStack.isEmpty() || mediatorBackStack.last() != it) {
+                mediatorBackStack.add(it)
+            }
         }
     }
 
@@ -283,7 +286,7 @@ open class View(var multitonKey: String) : IView {
             currentContainer?.removeView(it.viewComponent)
             // free the reference on viewComponent cause we dont need it anymore
             it.viewComponent = null
-            // if flag `true` we remove mediator from backstack
+            // if flag `true` we remove mediator from backstack on lastAddedIndex
             if (popIt) {
                 mediatorBackStack.removeAt(mediatorBackStack.lastIndexOf(it))
             }
