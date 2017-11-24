@@ -53,9 +53,14 @@ class LinearAnimator(override var from: IMediator? = null, override var to: IMed
             animator.duration = duration
         }
         animator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationCancel(animation: Animator) {}
+            override fun onAnimationCancel(animation: Animator) {
+                from = null
+                to = null
+            }
             override fun onAnimationEnd(animation: Animator) {
                 from?.hide()
+                from = null
+                to = null
             }
         })
         animator.start()
