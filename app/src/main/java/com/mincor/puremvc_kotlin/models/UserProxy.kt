@@ -25,6 +25,9 @@ class UserProxy : Proxy<MutableList<UserModel>>(NAME, mutableListOf()) {
      * Authorization User
      */
     fun authorization(email:String, pass:String){
+        this.sendNotification(NOTIFICATION_AUTH_COMPLETE)
+        return
+
         data.forEachIndexed { _, userModel ->
             if(userModel.email == email && userModel.password == pass){
                 this.sendNotification(NOTIFICATION_AUTH_COMPLETE)

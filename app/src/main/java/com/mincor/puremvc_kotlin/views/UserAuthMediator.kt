@@ -6,6 +6,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.mincor.puremvc_kotlin.R
 import com.mincor.puremvc_kotlin.facades.AppFacade
+import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.Mediator
 import com.mincor.puremvc_kotlin.models.UserProxy
@@ -53,13 +54,17 @@ class UserAuthMediator : Mediator(NAME) {
         sendNotification(AppFacade.AUTH, arrayOf(name, password))
     }
 
+    private fun onHideClicked(){
+        hide(true, LinearAnimator())
+    }
+
     override fun listNotificationInterests(): Array<String> =
             arrayOf(UserProxy.NOTIFICATION_AUTH_COMPLETE, UserProxy.NOTIFICATION_AUTH_FAILED)
 
     override fun handleNotification(notification: INotification) {
         when (notification.name) {
             UserProxy.NOTIFICATION_AUTH_COMPLETE -> {
-                getFacade().retrieveMediator(UserListsMediator.NAME)?.show()
+                getFacade().retrieveMediator(UserListsMediator.NAME)?.show(false, LinearAnimator())
             }
             UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(getFacade().activity, "Login Failed", Toast.LENGTH_SHORT).show()
         }
@@ -101,6 +106,10 @@ class UserAuthMediator : Mediator(NAME) {
 
                 button("Login") {
                     onClick { onLoginClicked() }
+                }
+
+                button("Hide") {
+                    onClick { onHideClicked() }
                 }
             }
         }

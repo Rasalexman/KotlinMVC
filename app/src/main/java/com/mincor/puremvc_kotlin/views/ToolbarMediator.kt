@@ -4,6 +4,7 @@ import android.support.v7.app.ActionBar
 import android.support.v7.widget.Toolbar
 import android.view.View
 import com.mincor.puremvc_kotlin.activity.log
+import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.common.IActionBarProvider
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.Mediator
 
@@ -18,8 +19,8 @@ abstract class ToolbarMediator(override val mediatorName: String) : Mediator(med
 
     protected var toolBar: Toolbar? = null
 
-    override fun hide(popIt: Boolean) {
-        super.hide(popIt)
+    override fun hide(popIt: Boolean, animation: IAnimator?) {
+        super.hide(popIt, animation)
         toolBar?.setOnClickListener(null)
         (getFacade().activity as IActionBarProvider).setSupportActionBar(null)
         toolBar = null

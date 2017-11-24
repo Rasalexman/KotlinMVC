@@ -2,7 +2,9 @@ package com.mincor.puremvc_kotlin.framework.multicore.core.view
 
 import android.app.Activity
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import com.mincor.puremvc_kotlin.activity.log
+import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.*
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
 
@@ -242,9 +244,12 @@ open class View(var multitonKey: String) : IView {
      * @param popLast
      * flag that indicates need to remove last showing from backstack
      */
-    override fun showMediator(mediatorName: String, popLast: Boolean) {
+    override fun showMediator(mediatorName: String, popLast: Boolean, animation:IAnimator?) {
+        val lastMediator = currentShowingMediator
+
         // hide last mediator
-        currentShowingMediator?.hide(popLast)
+        //currentShowingMediator?.hide(popLast)
+
         // Retrieve the named mediator
         currentShowingMediator = mediatorMap[mediatorName]
         currentShowingMediator!!.let {
@@ -256,6 +261,13 @@ open class View(var multitonKey: String) : IView {
             if(mediatorBackStack.isEmpty() || mediatorBackStack.last() != it) {
                 mediatorBackStack.add(it)
             }
+
+            animation?.apply {
+                from = lastMediator
+                to = it
+                isShow = true
+                playAnimation()
+            }
         }
     }
 
@@ -265,10 +277,10 @@ open class View(var multitonKey: String) : IView {
      * @param mediatorName
      * the name of the `IMediator` instance to show on the screen
      */
-    override fun showLastOrExistMediator(mediatorName: String) {
+    override fun showLastOrExistMediator(mediatorName: String, animation:IAnimator?) {
         val lastMediator = mediatorBackStack.lastOrNull()
         val lastMediatorName = lastMediator?.mediatorName ?: mediatorName
-        showMediator(lastMediatorName, false)
+        showMediator(lastMediatorName, false, animation)
     }
 
     /**
@@ -280,15 +292,24 @@ open class View(var multitonKey: String) : IView {
      * @param popIt
      * Indicates that is need to be removed from backstack
      */
-    override fun hideMediator(mediatorName: String, popIt: Boolean) {
-        mediatorMap[mediatorName]?.let {
-            // remove viewComponent from ui layer
-            currentContainer?.removeView(it.viewComponent)
-            // free the reference on viewComponent cause we dont need it anymore
-            it.viewComponent = null
+    override fun hideMediator(mediatorName: String, popIt: Boolean, animation:IAnimator?) {
+        mediatorMap[mediatorName]?.let { mediator->
+            animation?.let { anim ->
+                anim.apply {
+                    from = mediator
+                    isShow = false
+                    playAnimation()
+                }
+            } ?: mediator.apply {
+                // remove viewComponent from ui layer
+                currentContainer?.removeView(viewComponent)
+                // free the reference on viewComponent cause we don't need it anymore
+                viewComponent = null
+            }
+
             // if flag `true` we remove mediator from backstack on lastAddedIndex
             if (popIt) {
-                mediatorBackStack.removeAt(mediatorBackStack.lastIndexOf(it))
+                mediatorBackStack.removeAt(mediatorBackStack.lastIndexOf(mediator))
             }
         }
     }
@@ -300,15 +321,30 @@ open class View(var multitonKey: String) : IView {
      * @param mediatorName
      * the name of the `IMediator` instance to be removed from the screen
      */
-    override fun popMediator(mediatorName: String) {
-        val mediatorToPop = mediatorMap[mediatorName]
-        mediatorToPop?.let {
+    override fun popMediator(mediatorName: String, animation:IAnimator?) {
+
+        mediatorMap[mediatorName]?.let { mediatorToPop ->
             // if mediator to pop equal current showing mediator and backstack has more than one mediator
-            if (it == currentShowingMediator && mediatorBackStack.size > 1) {
-                // hide selected mediator and remove it from backstack
-                it.hide(true)
+            if (mediatorToPop == currentShowingMediator && mediatorBackStack.size > 1) {
+
                 // get last added mediator from backstack and show it on the screen
-                mediatorBackStack.last().show()
+                val lastAddedMediator = mediatorBackStack[mediatorBackStack.lastIndexOf(mediatorToPop)-1]
+                lastAddedMediator.show()
+
+                // if we have a animation just play it
+                animation?.let { anim ->
+                    anim.apply {
+                        from = mediatorToPop
+                        to = lastAddedMediator
+                        isShow = false
+                        playAnimation()
+                    }
+                } ?: mediatorToPop.apply {
+                    // hide selected mediator and remove it from backstack
+                    hide(true)
+                }
+
+
             }
         }
     }

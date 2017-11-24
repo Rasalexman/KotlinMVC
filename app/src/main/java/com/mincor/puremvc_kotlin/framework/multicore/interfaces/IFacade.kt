@@ -124,7 +124,7 @@ interface IFacade : INotifier {
      * @param popLast
      * flag that indicates need to remove last showing from backstack
      */
-    fun showMeditator(mediatorName: String, popLast: Boolean = false)
+    fun showMeditator(mediatorName: String, popLast: Boolean = false, animation:IAnimator? = null)
 
     /**
      * Show last added IMediator from backstack. If there is no mediator in backstack show the one passed by name
@@ -132,7 +132,7 @@ interface IFacade : INotifier {
      * @param mediatorName
      * the name of the `IMediator` instance to show on the screen
      */
-    fun showLastOrExistMediator(mediatorName: String)
+    fun showLastOrExistMediator(mediatorName: String, animation:IAnimator? = null)
 
     /**
      * Hide current mediator by name
@@ -143,7 +143,7 @@ interface IFacade : INotifier {
      * @param popIt
      * Indicates that is need to be removed from backstack
      */
-    fun hideMediator(mediatorName: String, popIt: Boolean = false)
+    fun hideMediator(mediatorName: String, popIt: Boolean = false, animation:IAnimator? = null)
 
     /**
      * Hide current mediator by the name and remove it from backstack then show last added mediator at backstack
@@ -152,5 +152,5 @@ interface IFacade : INotifier {
      * @param mediatorName
      * the name of the `IMediator` instance to be removed from the screen
      */
-    fun popMediator(mediatorName: String)
+    fun popMediator(mediatorName: String, animation:IAnimator? = null)
 }

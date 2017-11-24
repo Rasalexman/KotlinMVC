@@ -299,9 +299,12 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      *
      * @param popLast
      * flag that indicates need to remove last showing from backstack
+     *
+     * @param animation
+     * Instance of current animation
      */
-    override fun showMeditator(mediatorName: String, popLast: Boolean) {
-        view.showMediator(mediatorName, popLast)
+    override fun showMeditator(mediatorName: String, popLast: Boolean, animation:IAnimator?) {
+        view.showMediator(mediatorName, popLast, animation)
     }
 
     /**
@@ -310,8 +313,8 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      * @param mediatorName
      * the name of the `IMediator` instance to show on the screen
      */
-    override fun showLastOrExistMediator(mediatorName: String) {
-        view.showLastOrExistMediator(mediatorName)
+    override fun showLastOrExistMediator(mediatorName: String, animation:IAnimator?) {
+        view.showLastOrExistMediator(mediatorName, animation)
     }
 
     /**
@@ -322,9 +325,12 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      *
      * @param popIt
      * Indicates that is need to be removed from backstack
+     *
+     * @param animation
+     * Instance of current animation
      */
-    override fun hideMediator(mediatorName: String, popIt: Boolean) {
-        view.hideMediator(mediatorName, popIt)
+    override fun hideMediator(mediatorName: String, popIt: Boolean, animation:IAnimator?) {
+        view.hideMediator(mediatorName, popIt, animation)
     }
 
     /**
@@ -333,9 +339,12 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      *
      * @param mediatorName
      * the name of the `IMediator` instance to be removed from the screen
+     *
+     * @param animation
+     * Instance of current animation
      */
-    override fun popMediator(mediatorName: String) {
-        view.popMediator(mediatorName)
+    override fun popMediator(mediatorName: String, animation:IAnimator?) {
+        view.popMediator(mediatorName, animation)
     }
 
     /**

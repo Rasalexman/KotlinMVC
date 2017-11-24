@@ -1,6 +1,7 @@
 package com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator
 
 import android.view.View
+import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IMediator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
@@ -12,6 +13,10 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
 abstract class Mediator(override val mediatorName: String) : Notifier(), IMediator {
 
     override var viewComponent: View? = null
+
+    override var showAnimator: IAnimator? = null
+    override var hideAnimator: IAnimator? = null
+
 
     /**
      * Handle `INotification`s.
@@ -47,22 +52,22 @@ abstract class Mediator(override val mediatorName: String) : Notifier(), IMediat
     /**
      * Add current mediator to view stage
      */
-    override fun show(popLast: Boolean) {
-        getFacade().showMeditator(mediatorName, popLast)
+    override fun show(popLast: Boolean, animation:IAnimator?) {
+        getFacade().showMeditator(mediatorName, popLast, animation)
     }
 
     /**
      * Remove current mediator from view stage
      */
-    override fun hide(popIt: Boolean) {
-        getFacade().hideMediator(mediatorName, popIt)
+    override fun hide(popIt: Boolean, animation:IAnimator?) {
+        getFacade().hideMediator(mediatorName, popIt, animation)
     }
 
     /**
      * Remove current mediator from view stage and backstack
      * Then show the last added to backstack mediator on the view stage
      */
-    override fun popToBack() {
-        getFacade().popMediator(mediatorName)
+    override fun popToBack(animation:IAnimator?) {
+        getFacade().popMediator(mediatorName, animation)
     }
 }
