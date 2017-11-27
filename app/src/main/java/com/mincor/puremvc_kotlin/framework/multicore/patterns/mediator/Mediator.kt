@@ -14,9 +14,6 @@ abstract class Mediator(override val mediatorName: String) : Notifier(), IMediat
 
     override var viewComponent: View? = null
 
-    override var showAnimator: IAnimator? = null
-    override var hideAnimator: IAnimator? = null
-
 
     /**
      * Handle `INotification`s.

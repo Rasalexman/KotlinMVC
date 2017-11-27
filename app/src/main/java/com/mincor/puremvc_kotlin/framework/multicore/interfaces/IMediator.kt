@@ -1,6 +1,5 @@
 package com.mincor.puremvc_kotlin.framework.multicore.interfaces
 
-import android.animation.Animator
 import android.view.View
 
 /**
@@ -9,9 +8,6 @@ import android.view.View
 interface IMediator : INotifier {
     val mediatorName: String
     var viewComponent: View?
-
-    var showAnimator:IAnimator?
-    var hideAnimator:IAnimator?
 
     /**
      * List `INotification` interests.

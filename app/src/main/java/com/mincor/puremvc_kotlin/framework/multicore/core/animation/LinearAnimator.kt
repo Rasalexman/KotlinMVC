@@ -41,7 +41,7 @@ class LinearAnimator(override var from: IMediator? = null, override var to: IMed
 
     override fun playAnimation() {
         to?.let {
-            it.viewComponent?.viewTreeObserver?.addOnPreDrawListener(AnimationPreDrawListener(to!!.viewComponent!!))
+            it.viewComponent?.viewTreeObserver?.addOnPreDrawListener(AnimationPreDrawListener(to!!.viewComponent))
         }?:from?.let {
             startAnimation()
         }
@@ -66,7 +66,7 @@ class LinearAnimator(override var from: IMediator? = null, override var to: IMed
         animator.start()
     }
 
-    inner class AnimationPreDrawListener(private val toView: android.view.View?) : ViewTreeObserver.OnPreDrawListener{
+    inner class AnimationPreDrawListener(private var toView: android.view.View?) : ViewTreeObserver.OnPreDrawListener{
         private var hasRun: Boolean = false
         override fun onPreDraw(): Boolean {
             onReadyOrAborted()
@@ -83,6 +83,7 @@ class LinearAnimator(override var from: IMediator? = null, override var to: IMed
                         startAnimation()
                     }
                 }
+                toView = null
             }
         }
     }
