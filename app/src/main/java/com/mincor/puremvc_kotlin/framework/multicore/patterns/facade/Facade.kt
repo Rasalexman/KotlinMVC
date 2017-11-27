@@ -22,17 +22,17 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
     /**
      * Reference to the Controller
      */
-    private lateinit var controller: Controller
+    private lateinit var controller: IController
 
     /**
      * Reference to the Model
      */
-    private lateinit var model: Model
+    private lateinit var model: IModel
 
     /**
      * Reference to the View
      */
-    private lateinit var view: View
+    private lateinit var view: IView
 
 
     companion object {

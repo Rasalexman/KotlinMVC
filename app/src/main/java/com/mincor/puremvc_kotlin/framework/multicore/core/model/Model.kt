@@ -6,21 +6,21 @@ import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IProxy
 /**
  * Created by a.minkin on 21.11.2017.
  */
-open class Model(private var multitonKey: String) : IModel {
+open class Model private constructor(private var multitonKey: String) : IModel {
     /**
      * Mapping of proxyNames to IProxy instances.
      */
     private var proxyMap: MutableMap<String, IProxy<*>> = mutableMapOf()
 
     companion object {
-        private var instanceMap: MutableMap<String, Model> = mutableMapOf()
+        private var instanceMap: MutableMap<String, IModel> = mutableMapOf()
         /**
          * `Model` Multiton Factory method.
          *
          * @return the instance for this Multiton key
          */
         @Synchronized
-        fun getInstance(key: String): Model = instanceMap.getOrPut(key){ Model(key) }
+        fun getInstance(key: String): IModel = instanceMap.getOrPut(key){ Model(key) }
 
         /**
          * Remove an IModel instance

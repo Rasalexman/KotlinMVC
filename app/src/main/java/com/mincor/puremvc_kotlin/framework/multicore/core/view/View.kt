@@ -12,7 +12,7 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
 /**
  * Created by a.minkin on 21.11.2017.
  */
-open class View(var multitonKey: String) : IView {
+open class View private constructor(private var multitonKey: String) : IView {
 
     // Mapping of Mediator names to Mediator instances
     // Mapping of Notification names to Observer lists
@@ -27,12 +27,12 @@ open class View(var multitonKey: String) : IView {
     /**
      * Reference to the Activity attached on core
      */
-    var currentActivity: Activity? = null
-
+    override var currentActivity: Activity? = null
     /**
      * Instance of ui container
      */
-    var currentContainer: ViewGroup? = null
+    override var currentContainer: ViewGroup? = null
+
 
     companion object {
         private val instanceMap: MutableMap<String, View> = mutableMapOf()

@@ -1,9 +1,22 @@
 package com.mincor.puremvc_kotlin.framework.multicore.interfaces
 
+import android.app.Activity
+import android.view.ViewGroup
+
 /**
  * Created by a.minkin on 21.11.2017.
  */
 interface IView {
+
+    /**
+     * Reference to the Activity attached on core
+     */
+    var currentActivity: Activity?
+
+    /**
+     * Instance of ui container
+     */
+    var currentContainer: ViewGroup?
 
     /**
      * Register an `IObserver` to be notified of

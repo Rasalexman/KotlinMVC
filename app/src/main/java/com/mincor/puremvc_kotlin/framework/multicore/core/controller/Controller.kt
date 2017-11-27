@@ -7,7 +7,7 @@ import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IFunction
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
 
-open class Controller(private val multitonKey: String) : IController {
+open class Controller private constructor(private val multitonKey: String) : IController {
 
     /**
      * Mapping of Notification names to Command Class references

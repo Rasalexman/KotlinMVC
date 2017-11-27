@@ -61,6 +61,7 @@ class LinearAnimator(override var from: IMediator? = null, override var to: IMed
                 from?.hide()
                 from = null
                 to = null
+                animation.removeAllListeners()
             }
         })
         animator.start()

@@ -10,9 +10,7 @@ import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimat
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.common.IActionBarProvider
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.facade.Facade
 import com.mincor.puremvc_kotlin.views.UserAuthMediator
-import org.jetbrains.anko.appcompat.v7.fitWindowsLinearLayout
 import org.jetbrains.anko.frameLayout
-import org.jetbrains.anko.linearLayout
 import org.jetbrains.anko.matchParent
 
 class MainActivity : AppCompatActivity(), IActionBarProvider {
