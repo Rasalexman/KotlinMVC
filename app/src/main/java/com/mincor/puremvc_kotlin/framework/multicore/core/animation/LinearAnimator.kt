@@ -54,14 +54,19 @@ class LinearAnimator(override var from: IMediator? = null, override var to: IMed
         }
         animator.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationCancel(animation: Animator) {
-                from = null
-                to = null
+                clearAnimation(animation)
             }
             override fun onAnimationEnd(animation: Animator) {
                 from?.hide()
+                clearAnimation(animation)
+            }
+
+            private fun clearAnimation(animation: Animator){
                 from = null
                 to = null
                 animation.removeAllListeners()
+                animation.end()
+                animation.cancel()
             }
         })
         animator.start()
@@ -84,8 +89,8 @@ class LinearAnimator(override var from: IMediator? = null, override var to: IMed
                         startAnimation()
                     }
                 }
-                toView = null
             }
+            toView = null
         }
     }
 }

@@ -43,7 +43,7 @@ abstract class Mediator(override val mediatorName: String) : Notifier(), IMediat
      * Called by the View when the Mediator is removed.
      */
     override fun onRemove() {
-        hide(true)
+
     }
 
     /**

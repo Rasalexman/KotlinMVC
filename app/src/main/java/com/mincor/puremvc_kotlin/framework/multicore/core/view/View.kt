@@ -207,8 +207,8 @@ open class View private constructor(private var multitonKey: String) : IView {
     override fun removeMediator(mediatorName: String): IMediator? {
         // Retrieve the named mediator
         val mediator = mediatorMap[mediatorName]
-
         mediator?.let {
+            it.hide(true)
             // for every notification this mediator is interested in...
             val interests = it.listNotificationInterests()
             // remove the observer linking the mediator
@@ -220,6 +220,8 @@ open class View private constructor(private var multitonKey: String) : IView {
             mediatorMap.remove(mediatorName)
             // alert the mediator that it has been removed
             it.onRemove()
+            // clear reference to viewComponent
+            it.viewComponent = null
         }
         return mediator
     }
@@ -303,8 +305,6 @@ open class View private constructor(private var multitonKey: String) : IView {
             } ?: mediator.apply {
                 // remove viewComponent from ui layer
                 currentContainer?.removeView(viewComponent)
-                // free the reference on viewComponent cause we don't need it anymore
-                viewComponent = null
             }
 
             // if flag `true` we remove mediator from backstack on lastAddedIndex
