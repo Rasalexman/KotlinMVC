@@ -22,6 +22,10 @@ abstract class ToolbarMediator(override val mediatorName: String) : Mediator(med
 
     override fun hide(popIt: Boolean, animation: IAnimator?) {
         super.hide(popIt, animation)
+    }
+
+    override fun onRemove() {
+        super.onRemove()
         toolBar?.setNavigationOnClickListener(null)
         (getFacade().activity as IActionBarProvider).setSupportActionBar(null)
         toolBar = null
