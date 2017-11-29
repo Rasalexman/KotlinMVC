@@ -12,6 +12,7 @@ interface IMediator : INotifier {
     val mediatorName: String
     var viewComponent: View?
     var hasOptionalMenu:Boolean
+    var hideOptionalMenu:Boolean
 
 
     /**

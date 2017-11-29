@@ -17,7 +17,7 @@ abstract class Mediator(override val mediatorName: String) : Notifier(), IMediat
 
     override var viewComponent: View? = null
     override var hasOptionalMenu:Boolean = false
-
+    override var hideOptionalMenu: Boolean = false
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {}
     override fun onPrepareOptionsMenu(menu: Menu) {}

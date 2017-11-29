@@ -1,6 +1,8 @@
 package com.mincor.puremvc_kotlin.views
 
 import android.support.v4.content.ContextCompat
+import android.view.Menu
+import android.view.MenuInflater
 import android.view.View
 import com.mincor.puremvc_kotlin.R
 import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimator
@@ -14,6 +16,8 @@ import org.jetbrains.anko.sdk25.coroutines.onClick
  */
 class UserListsMediator : ToolbarMediator(NAME) {
 
+    override var hasOptionalMenu: Boolean = true
+
     companion object {
         val NAME = "user_list_mediator"
     }
@@ -26,6 +30,11 @@ class UserListsMediator : ToolbarMediator(NAME) {
 
     fun onBackClickHandler(){
         popToBack(LinearAnimator())
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_list, menu)
     }
 
     inner class UserListUI : AnkoComponent<UserListsMediator> {

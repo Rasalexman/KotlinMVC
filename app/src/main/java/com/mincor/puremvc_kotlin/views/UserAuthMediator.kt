@@ -2,6 +2,9 @@ package com.mincor.puremvc_kotlin.views
 
 import android.support.v4.content.ContextCompat
 import android.text.InputType
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.mincor.puremvc_kotlin.R
@@ -70,6 +73,19 @@ class UserAuthMediator : ToolbarMediator(NAME) {
             }
             UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(getFacade().activity, "Login Failed", Toast.LENGTH_SHORT).show()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.menu_auth, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.action_settings -> com.mincor.puremvc_kotlin.activity.log { "SETTINGS CLICKED" }
+            R.id.action_about -> com.mincor.puremvc_kotlin.activity.log { "ABOUT CLICKED" }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     inner class UserAuthUI : AnkoComponent<UserAuthMediator> {
