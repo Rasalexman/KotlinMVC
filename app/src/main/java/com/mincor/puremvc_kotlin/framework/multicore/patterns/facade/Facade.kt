@@ -1,8 +1,6 @@
 package com.mincor.puremvc_kotlin.framework.multicore.patterns.facade
 
 import android.app.Activity
-import android.app.Application
-import android.os.Bundle
 import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.framework.multicore.core.controller.Controller
 import com.mincor.puremvc_kotlin.framework.multicore.core.model.Model
@@ -34,16 +32,8 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
      */
     private lateinit var view: IView
 
-
     companion object {
         val DEFAULT_KEY = "FACADE"
-
-        val ACTIVITY_CREATED = "created"
-        val ACTIVITY_STARTED = "started"
-        val ACTIVITY_RESUMED = "resumed"
-        val ACTIVITY_PAUSED = "paused"
-        val ACTIVITY_STOPPED = "stopped"
-        val ACTIVITY_DESTROYED = "destroyed"
 
         private val instanceMap: MutableMap<String, Facade> = mutableMapOf()
 
@@ -86,6 +76,21 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
     }
 
     /**
+     * Attach current activity and parent container to the this core
+     * only one core can has one activity to attach, we cant reattach activity to the core
+     *
+     * @param activity
+     * Current Activity to attach the core
+     *
+     * @param container
+     * Current container (ViewGroup) to add childs viewComponents from Mediators
+     */
+    override fun attachActivity(activity: Activity, container:ViewGroup?):IFacade {
+        view.attachActivity(activity)
+        return this
+    }
+
+    /**
      * Initialize the Multiton `Facade` instance.
      *
      * <P>
@@ -97,60 +102,6 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
         initializeModel()
         initializeController()
         initializeView()
-    }
-
-
-    /**
-     * Attach current instance of Activity to Facade core
-     * Only one core can has one attached activity
-     */
-    override fun attachActivity(activity: Activity, container: ViewGroup) {
-        // attached container for UI
-        view.currentContainer = container
-        // current activity for support and creating UI
-        view.currentActivity ?: let {
-            activity.application.registerActivityLifecycleCallbacks(object : Application.ActivityLifecycleCallbacks {
-                override fun onActivityCreated(p0: Activity?, p1: Bundle?) {
-                    print("onActivityCreated")
-                    sendNotification(ACTIVITY_CREATED)
-                }
-
-                override fun onActivityStarted(p0: Activity?) {
-                    print("onActivityStarted")
-                    sendNotification(ACTIVITY_STARTED)
-                }
-
-                override fun onActivityResumed(p0: Activity?) {
-                    print("onActivityResumed")
-                    sendNotification(ACTIVITY_RESUMED)
-                }
-
-                override fun onActivityPaused(p0: Activity?) {
-                    print("onActivityPaused")
-                    sendNotification(ACTIVITY_PAUSED)
-                }
-
-                override fun onActivityStopped(p0: Activity?) {
-                    print("onActivityStopped")
-                    sendNotification(ACTIVITY_STOPPED)
-                }
-
-                override fun onActivityDestroyed(p0: Activity?) {
-                    print("onActivityDestroyed")
-                    sendNotification(ACTIVITY_DESTROYED)
-                    // we dont need current container anymore cause our activity is destroyed
-                    view.currentContainer?.removeAllViews()
-                    // clear reference
-                    view.currentContainer = null
-                }
-
-                override fun onActivitySaveInstanceState(p0: Activity?, p1: Bundle?) {
-
-                }
-            })
-
-            view.currentActivity = activity
-        }
     }
 
     /**

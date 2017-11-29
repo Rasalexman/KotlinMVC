@@ -1,5 +1,8 @@
 package com.mincor.puremvc_kotlin.framework.multicore.interfaces
 
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 
 /**
@@ -8,6 +11,23 @@ import android.view.View
 interface IMediator : INotifier {
     val mediatorName: String
     var viewComponent: View?
+    var hasOptionalMenu:Boolean
+
+
+    /**
+     * When current View has attached your menu
+     */
+    fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater)
+
+    /**
+     *
+     */
+    fun onPrepareOptionsMenu(menu: Menu)
+
+    /**
+     *
+     */
+    fun onOptionsItemSelected(item: MenuItem): Boolean
 
     /**
      * List `INotification` interests.
@@ -46,7 +66,7 @@ interface IMediator : INotifier {
      * @param popLast
      * Flag that indicates to need remove last showing mediator from backstack
      */
-    fun show(popLast: Boolean = false, animation:IAnimator? = null)
+    fun show(popLast: Boolean = false, animation: IAnimator? = null)
 
     /**
      * Remove current mediator from view stage
@@ -54,12 +74,12 @@ interface IMediator : INotifier {
      * @param popIt
      * Flag that indicates to need remove current mediator from backstack
      */
-    fun hide(popIt: Boolean = false, animation:IAnimator? = null)
+    fun hide(popIt: Boolean = false, animation: IAnimator? = null)
 
     /**
      * Hide current mediator and remove it from backstack
      * Then show last added mediator from backstack
      */
-    fun popToBack(animation:IAnimator? = null)
+    fun popToBack(animation: IAnimator? = null)
 
 }

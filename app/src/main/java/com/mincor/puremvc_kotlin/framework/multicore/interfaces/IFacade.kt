@@ -13,7 +13,7 @@ interface IFacade : INotifier {
      * @param activity - activity for attachment and lifecyrcle handled
      * @param container - container for add/remove ui
      */
-    fun attachActivity(activity: Activity, container: ViewGroup)
+    fun attachActivity(activity: Activity, container:ViewGroup? = null):IFacade
 
 
     /**

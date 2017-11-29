@@ -8,7 +8,6 @@ import com.mincor.puremvc_kotlin.R
 import com.mincor.puremvc_kotlin.facades.AppFacade
 import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
-import com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator.Mediator
 import com.mincor.puremvc_kotlin.models.UserProxy
 import com.mincor.puremvc_kotlin.utils.Keyboards
 import org.jetbrains.anko.*
@@ -20,7 +19,9 @@ import org.jetbrains.anko.sdk25.coroutines.textChangedListener
 /**
  * Created by a.minkin on 22.11.2017.
  */
-class UserAuthMediator : Mediator(NAME) {
+class UserAuthMediator : ToolbarMediator(NAME) {
+
+    override var hasOptionalMenu: Boolean = true
 
     companion object {
         val NAME = "user_auth_mediator"
@@ -31,6 +32,7 @@ class UserAuthMediator : Mediator(NAME) {
 
     override fun onCreateView() {
         viewComponent = UserAuthUI().createView(AnkoContext.create(getFacade().activity, this))
+        super.onCreateView()
     }
 
     fun nameUpdated(newName: String) {
@@ -74,7 +76,7 @@ class UserAuthMediator : Mediator(NAME) {
         override fun createView(ui: AnkoContext<UserAuthMediator>) = with(ui) {
             verticalLayout {
                 lparams(matchParent, matchParent)
-                toolbar {
+                toolBar = toolbar {
                     setTitleTextColor(ContextCompat.getColor(ctx, android.R.color.white))
                     title = "Login"
                     backgroundResource = R.color.colorPrimary

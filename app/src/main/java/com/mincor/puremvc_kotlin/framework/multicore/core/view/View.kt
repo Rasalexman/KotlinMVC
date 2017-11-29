@@ -1,18 +1,22 @@
 package com.mincor.puremvc_kotlin.framework.multicore.core.view
 
 import android.app.Activity
-import android.view.ViewGroup
-import android.view.ViewTreeObserver
+import android.app.Application
+import android.app.Fragment
+import android.os.Bundle
+import android.view.*
 import com.mincor.puremvc_kotlin.activity.log
-import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.*
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
+import org.jetbrains.anko.*
 
 
 /**
  * Created by a.minkin on 21.11.2017.
  */
-open class View private constructor(private var multitonKey: String) : IView {
+open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
+
+    private var multitonKey: String? = null
 
     // Mapping of Mediator names to Mediator instances
     // Mapping of Notification names to Observer lists
@@ -33,8 +37,22 @@ open class View private constructor(private var multitonKey: String) : IView {
      */
     override var currentContainer: ViewGroup? = null
 
+    //override val currentContainer: ViewGroup? get() =
+
+    /**
+     * is already registered lifecycle callbacks
+     */
+    private var isAlreadyRegistered: Boolean = false
+
 
     companion object {
+        val ACTIVITY_CREATED = "created"
+        val ACTIVITY_STARTED = "started"
+        val ACTIVITY_RESUMED = "resumed"
+        val ACTIVITY_PAUSED = "paused"
+        val ACTIVITY_STOPPED = "stopped"
+        val ACTIVITY_DESTROYED = "destroyed"
+
         private val instanceMap: MutableMap<String, View> = mutableMapOf()
         /**
          * View Singleton Factory method.
@@ -42,7 +60,11 @@ open class View private constructor(private var multitonKey: String) : IView {
          * @return the Singleton instance of `View`
          */
         @Synchronized
-        fun getInstance(key: String): View = instanceMap.getOrPut(key) { View(key) }
+        fun getInstance(key: String): View = instanceMap.getOrPut(key) {
+            val viewInstance = View()
+            viewInstance.multitonKey = key
+            viewInstance
+        }
 
         /**
          * Remove an IView instance
@@ -55,32 +77,83 @@ open class View private constructor(private var multitonKey: String) : IView {
         }
     }
 
-    /**
-     * initialization
-     *
-     * <P>
-     * This `IView` implementation is a Multiton,
-     * so you should not call the constructor
-     * directly, but instead call the static Multiton
-     * Factory method `View.getInstance( multitonKey )`
-    </P> */
     init {
-        instanceMap.getOrPut(multitonKey) { this }
-        initializeView()
+        retainInstance = true
     }
 
-    /**
-     * Initialize the Singleton View instance.
-     *
-     * <P>
-     * Called automatically by the constructor, this is your opportunity to
-     * initialize the Singleton instance in your subclass without overriding
-     * the constructor.
-    </P> *
-     *
-     */
-    protected fun initializeView() {}
+    override fun attachActivity(activity: Activity, container: ViewGroup?) {
+        currentContainer = container ?: activity.window.decorView.find(android.R.id.content)
+        if (!isAlreadyRegistered) {
+            currentActivity = activity
+            activity.fragmentManager.beginTransaction().replace(android.R.id.content,this, multitonKey).commit() //
+            activity.application.registerActivityLifecycleCallbacks(this)
+            isAlreadyRegistered = true
+        }
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        currentShowingMediator?.let {
+            if (it.hasOptionalMenu) {
+                it.onCreateOptionsMenu(menu, inflater)
+            }
+        }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        currentShowingMediator?.let {
+            if (it.hasOptionalMenu) {
+                it.onPrepareOptionsMenu(menu)
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (currentShowingMediator?.onOptionsItemSelected(item) == true) {
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    //-------------- LIFE CYCLE CALLBACKS -------/////
+    override fun onActivityCreated(activity: Activity?, p1: Bundle?) {
+        //sendNotification(LifecycleHandler.ACTIVITY_CREATED, activity)
+        log { "event $ACTIVITY_CREATED" }
+    }
+
+    override fun onActivityStarted(activity: Activity?) {
+        //sendNotification(LifecycleHandler.ACTIVITY_STARTED, activity)
+    }
+
+    override fun onActivityResumed(activity: Activity?) {
+        //sendNotification(LifecycleHandler.ACTIVITY_RESUMED, activity)
+    }
+
+    override fun onActivityPaused(activity: Activity?) {
+        //sendNotification(LifecycleHandler.ACTIVITY_PAUSED, activity)
+    }
+
+    override fun onActivityStopped(activity: Activity?) {
+        //sendNotification(LifecycleHandler.ACTIVITY_STOPPED, activity)
+    }
+
+    override fun onActivityDestroyed(activity: Activity?) {
+        //sendNotification(LifecycleHandler.ACTIVITY_DESTROYED, activity)
+        currentContainer?.removeAllViews()
+        currentContainer = null
+        currentShowingMediator = null
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity?, bundle: Bundle?) {
+        //sendNotification(LifecycleHandler.ACTIVITY_STATE_SAVE, bundle)
+    }
+    /////////------------------------------------///////
 
     /**
      * Notify the `Observers` for a particular
@@ -159,7 +232,7 @@ open class View private constructor(private var multitonKey: String) : IView {
         val currentMediator = this.mediatorMap.getOrPut(mediator.mediatorName) { mediator }
         // Only fresh mediators can register observers
         currentMediator.multitonKey ?: let {
-            currentMediator.initializeNotifier(multitonKey)
+            currentMediator.initializeNotifier(multitonKey!!)
             // Get Notification interests, if any.
             val noteInterests = currentMediator.listNotificationInterests()
             if (noteInterests.isNotEmpty()) {
@@ -208,6 +281,7 @@ open class View private constructor(private var multitonKey: String) : IView {
         // Retrieve the named mediator
         val mediator = mediatorMap[mediatorName]
         mediator?.let {
+            // hide mediator and remove from backstack
             it.hide(true)
             // for every notification this mediator is interested in...
             val interests = it.listNotificationInterests()
@@ -246,7 +320,7 @@ open class View private constructor(private var multitonKey: String) : IView {
      * @param popLast
      * flag that indicates need to remove last showing from backstack
      */
-    override fun showMediator(mediatorName: String, popLast: Boolean, animation:IAnimator?) {
+    override fun showMediator(mediatorName: String, popLast: Boolean, animation: IAnimator?) {
         val lastMediator = currentShowingMediator
 
         // hide last mediator
@@ -254,19 +328,25 @@ open class View private constructor(private var multitonKey: String) : IView {
 
         // Retrieve the named mediator
         currentShowingMediator = mediatorMap[mediatorName]
-        currentShowingMediator!!.let {
-            // make sure that we have an actual viewComponent if not recreate it
-            it.viewComponent ?: it.onCreateView()
-            // add view component to the container
-            currentContainer?.addView(it.viewComponent)
+        currentShowingMediator?.let { showingMediator ->
+            // make sure that we have an actual viewComponent and it don't have parent if not recreate it
+            showingMediator.viewComponent?.let { view->
+                view.parent?.let { parent-> (parent as ViewGroup).removeView(view) }
+            } ?: showingMediator.onCreateView()
+            // add view component to the container if parent is not null
+            currentContainer?.addView(showingMediator.viewComponent)
             // add to backstack if we don't have any mediators in it or last mediator does not equal the same mediator as we showing on the screen
-            if(mediatorBackStack.isEmpty() || mediatorBackStack.last() != it) {
-                mediatorBackStack.add(it)
+            if (mediatorBackStack.isEmpty() || mediatorBackStack.last() != showingMediator) {
+                mediatorBackStack.add(showingMediator)
             }
 
+            // check for optional menu and invalidate it if it has
+            if (showingMediator.hasOptionalMenu) {
+                currentActivity?.invalidateOptionsMenu()
+            }
             animation?.apply {
                 from = lastMediator
-                to = it
+                to = showingMediator
                 isShow = true
                 playAnimation()
             }
@@ -279,10 +359,11 @@ open class View private constructor(private var multitonKey: String) : IView {
      * @param mediatorName
      * the name of the `IMediator` instance to show on the screen
      */
-    override fun showLastOrExistMediator(mediatorName: String, animation:IAnimator?) {
+    override fun showLastOrExistMediator(mediatorName: String, animation: IAnimator?) {
         val lastMediator = mediatorBackStack.lastOrNull()
         val lastMediatorName = lastMediator?.mediatorName ?: mediatorName
-        showMediator(lastMediatorName, false, animation)
+        val lastAnimation = if(lastMediator != null) null else animation
+        showMediator(lastMediatorName, false, lastAnimation)
     }
 
     /**
@@ -294,9 +375,10 @@ open class View private constructor(private var multitonKey: String) : IView {
      * @param popIt
      * Indicates that is need to be removed from backstack
      */
-    override fun hideMediator(mediatorName: String, popIt: Boolean, animation:IAnimator?) {
-        mediatorMap[mediatorName]?.let { mediator->
+    override fun hideMediator(mediatorName: String, popIt: Boolean, animation: IAnimator?) {
+        mediatorMap[mediatorName]?.let { mediator ->
             animation?.let { anim ->
+                // play animation
                 anim.apply {
                     from = mediator
                     isShow = false
@@ -321,14 +403,13 @@ open class View private constructor(private var multitonKey: String) : IView {
      * @param mediatorName
      * the name of the `IMediator` instance to be removed from the screen
      */
-    override fun popMediator(mediatorName: String, animation:IAnimator?) {
-
+    override fun popMediator(mediatorName: String, animation: IAnimator?) {
         mediatorMap[mediatorName]?.let { mediatorToPop ->
             // if mediator to pop equal current showing mediator and backstack has more than one mediator
             if (mediatorToPop == currentShowingMediator && mediatorBackStack.size > 1) {
 
                 // get last added mediator from backstack and show it on the screen
-                val lastAddedMediator = mediatorBackStack[mediatorBackStack.lastIndexOf(mediatorToPop)-1]
+                val lastAddedMediator = mediatorBackStack[mediatorBackStack.lastIndexOf(mediatorToPop) - 1]
                 lastAddedMediator.show()
 
                 // if we have a animation just play it

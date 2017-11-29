@@ -1,5 +1,8 @@
 package com.mincor.puremvc_kotlin.framework.multicore.patterns.mediator
 
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IAnimator
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.IMediator
@@ -13,7 +16,12 @@ import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notifier
 abstract class Mediator(override val mediatorName: String) : Notifier(), IMediator {
 
     override var viewComponent: View? = null
+    override var hasOptionalMenu:Boolean = false
 
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {}
+    override fun onPrepareOptionsMenu(menu: Menu) {}
+    override fun onOptionsItemSelected(item: MenuItem): Boolean = true
 
     /**
      * Handle `INotification`s.

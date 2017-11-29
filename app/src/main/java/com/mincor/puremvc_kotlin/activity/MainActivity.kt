@@ -18,9 +18,9 @@ class MainActivity : AppCompatActivity(), IActionBarProvider {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val container = frameLayout { lparams(matchParent, matchParent) }
+        //val container = frameLayout { lparams(matchParent, matchParent) }
         val appFacade:AppFacade = Facade.getInstance(AppFacade.NAME) as AppFacade
-        appFacade.attachActivity(this, container)
+        appFacade.attachActivity(this)
         appFacade.showLastOrExistMediator(UserAuthMediator.NAME, LinearAnimator())
     }
 
