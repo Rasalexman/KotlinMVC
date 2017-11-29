@@ -20,8 +20,7 @@ class MainActivity : AppCompatActivity(), IActionBarProvider {
 
         //val container = frameLayout { lparams(matchParent, matchParent) }
         val appFacade:AppFacade = Facade.getInstance(AppFacade.NAME) as AppFacade
-        appFacade.attachActivity(this)
-        appFacade.showLastOrExistMediator(UserAuthMediator.NAME, LinearAnimator())
+        appFacade.attachActivity(this).showLastOrExistMediator(UserAuthMediator.NAME, LinearAnimator())
     }
 
     override fun setSupportActionBar(toolbar: Toolbar?) {
