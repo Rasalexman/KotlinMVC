@@ -15,19 +15,19 @@ interface IModel {
     /**
      * Retrieve an `IProxy` instance from the Model.
      *
-     * @param proxy
+     * @param proxyName
      * @return the `IProxy` instance previously registered with the
      * given `proxyName`.
      */
-    fun retrieveProxy(proxy: String): IProxy<*>
+    fun retrieveProxy(proxyName: String): IProxy<*>
 
     /**
      * Remove an `IProxy` instance from the Model.
      *
-     * @param proxy
+     * @param proxyName
      * name of the `IProxy` instance to be removed.
      */
-    fun removeProxy(proxy: String): IProxy<*>
+    fun removeProxy(proxyName: String): IProxy<*>
 
     /**
      * Check if a Proxy is registered.
