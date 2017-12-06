@@ -1,10 +1,12 @@
-# PureMVC-Kotlin
-This is a vision on how android development can drive.
+# KotlinMVC
+This is a vision on how android development can drive without fragment. It use ANKO Layout to generate UI 
 There are 4 main blocks in this framework:
+- MODEL (PROXY) - services and VO holders
 - VIEW (MEDIATORS) - simple layout handler class
 - CONTROLLER (COMMANDS) - business logic holder
-- MODEL (PROXY) - services and VO holders
 - FACADE - unite all this 3 components in one core
+
+it contains powerful event system, lifecycle handler, menu creations, save bundle
 
 #Initialize core
 ```kotlin
