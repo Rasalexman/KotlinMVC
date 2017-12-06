@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.*
 import com.mincor.puremvc_kotlin.activity.log
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.*
+import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
 import org.jetbrains.anko.*
 
@@ -52,6 +53,7 @@ open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
         val ACTIVITY_PAUSED = "paused"
         val ACTIVITY_STOPPED = "stopped"
         val ACTIVITY_DESTROYED = "destroyed"
+        val ACTIVITY_STATE_SAVE = "state_save"
 
         private val instanceMap: MutableMap<String, View> = mutableMapOf()
         /**
@@ -81,6 +83,16 @@ open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
         retainInstance = true
     }
 
+    /**
+     * Attach current activity to the core view
+     * Only one activity can be attached to the core
+     *
+     * @param activity
+     * Current activity to be attached with lifecycle
+     *
+     * @param container
+     * The container when ui will be added if there no container we take default activity decorView content (frame layout)
+     */
     override fun attachActivity(activity: Activity, container: ViewGroup?) {
         currentContainer = container ?: activity.window.decorView.find(android.R.id.content)
         if (!isAlreadyRegistered) {
@@ -128,30 +140,30 @@ open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityStarted(activity: Activity?) {
-        //sendNotification(LifecycleHandler.ACTIVITY_STARTED, activity)
+        notifyObservers(Notification(ACTIVITY_STARTED, activity))
     }
 
     override fun onActivityResumed(activity: Activity?) {
-        //sendNotification(LifecycleHandler.ACTIVITY_RESUMED, activity)
+        notifyObservers(Notification(ACTIVITY_RESUMED, activity))
     }
 
     override fun onActivityPaused(activity: Activity?) {
-        //sendNotification(LifecycleHandler.ACTIVITY_PAUSED, activity)
+        notifyObservers(Notification(ACTIVITY_PAUSED, activity))
     }
 
     override fun onActivityStopped(activity: Activity?) {
-        //sendNotification(LifecycleHandler.ACTIVITY_STOPPED, activity)
+        notifyObservers(Notification(ACTIVITY_STOPPED, activity))
     }
 
     override fun onActivityDestroyed(activity: Activity?) {
-        //sendNotification(LifecycleHandler.ACTIVITY_DESTROYED, activity)
+        notifyObservers(Notification(ACTIVITY_DESTROYED, activity))
         currentContainer?.removeAllViews()
         currentContainer = null
         currentShowingMediator = null
     }
 
     override fun onActivitySaveInstanceState(activity: Activity?, bundle: Bundle?) {
-        //sendNotification(LifecycleHandler.ACTIVITY_STATE_SAVE, bundle)
+        notifyObservers(Notification(ACTIVITY_STATE_SAVE, bundle))
     }
     /////////------------------------------------///////
 

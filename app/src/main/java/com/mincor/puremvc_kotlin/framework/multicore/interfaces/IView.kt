@@ -22,6 +22,16 @@ interface IView {
     var currentContainer: ViewGroup?
 
 
+    /**
+     * Attach current activity to the core view
+     * Only one activity can be attached to the core
+     *
+     * @param activity
+     * Current activity to be attached with lifecycle
+     *
+     * @param container
+     * The container when ui will be added
+     */
     fun attachActivity(activity: Activity, container:ViewGroup? = null)
 
     /**

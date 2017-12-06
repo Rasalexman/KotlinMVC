@@ -1,6 +1,5 @@
 package com.mincor.puremvc_kotlin.facades
 
-import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.controllers.StartupCommand
 import com.mincor.puremvc_kotlin.controllers.UserAuthCommand
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.facade.Facade
