@@ -1,5 +1,5 @@
 # PureMVC-Kotlin
-This is a vision on how android development can drive
+This is a vision on how android development can drive.
 There are 4 main blocks in this framework:
 - VIEW (MEDIATORS) - simple layout handler class
 - CONTROLLER (COMMANDS) - business logic holder
