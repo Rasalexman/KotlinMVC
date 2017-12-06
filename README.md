@@ -20,4 +20,3 @@ appFacade.attachActivity(this).showLastOrExistMediator(UserAuthMediator.NAME, Li
 
 See the example project and java doc to know more about this framework
 # This project is under development 
-# if u have any ideas or improvment please contact with developer by email
