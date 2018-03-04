@@ -71,7 +71,7 @@ open class Facade(override var multitonKey: String? = DEFAULT_KEY) : IFacade {
 
     init {
         if (instanceMap[multitonKey] != null) throw RuntimeException(multitonKey + " Facade already constructed")
-        instanceMap.put(multitonKey!!, this)
+        instanceMap[multitonKey!!] = this
         initializeFacade()
     }
 

@@ -16,7 +16,7 @@ class UserProxy : Proxy<MutableList<UserModel>>(NAME, mutableListOf()) {
     }
 
     init {
-        addItem(UserModel("Alex", "Minkin", 30, "sphc@yandex.ru", "030287"))
+        addItem(UserModel("Alex", "Minkin", 30, "rastarz@yandex.ru", "030287"))
         addItem(UserModel("Piter", "Griffin", 44, "piter@gmail.com", "dsds457dfds1224hg"))
         addItem(UserModel("Glen", "Marson", 30, "marson@yahoo.com", "sf11GH45S555"))
     }
