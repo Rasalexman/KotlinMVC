@@ -4,12 +4,15 @@ import android.app.Activity
 import android.app.Application
 import android.app.Fragment
 import android.os.Bundle
-import android.view.*
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.ViewGroup
 import com.mincor.puremvc_kotlin.activity.log
 import com.mincor.puremvc_kotlin.framework.multicore.interfaces.*
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Notification
 import com.mincor.puremvc_kotlin.framework.multicore.patterns.observer.Observer
-import org.jetbrains.anko.*
+import org.jetbrains.anko.find
 
 
 /**
@@ -37,8 +40,6 @@ open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
      * Instance of ui container
      */
     override var currentContainer: ViewGroup? = null
-
-    //override val currentContainer: ViewGroup? get() =
 
     /**
      * is already registered lifecycle callbacks
@@ -97,7 +98,7 @@ open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
         currentContainer = container ?: activity.window.decorView.find(android.R.id.content)
         if (!isAlreadyRegistered) {
             currentActivity = activity
-            activity.fragmentManager.beginTransaction().replace(android.R.id.content,this, multitonKey).commit() //
+            activity.fragmentManager.beginTransaction().replace(android.R.id.content, this, multitonKey).commit() //
             activity.application.registerActivityLifecycleCallbacks(this)
             isAlreadyRegistered = true
         }
@@ -135,7 +136,7 @@ open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
 
     //-------------- LIFE CYCLE CALLBACKS -------/////
     override fun onActivityCreated(activity: Activity?, p1: Bundle?) {
-        //sendNotification(LifecycleHandler.ACTIVITY_CREATED, activity)
+        notifyObservers(Notification(ACTIVITY_STARTED, activity))
         log { "event $ACTIVITY_CREATED" }
     }
 
@@ -335,9 +336,6 @@ open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
     override fun showMediator(mediatorName: String, popLast: Boolean, animation: IAnimator?) {
         val lastMediator = currentShowingMediator
 
-        // hide last mediator
-        //currentShowingMediator?.hide(popLast)
-
         // Retrieve the named mediator
         currentShowingMediator = mediatorMap[mediatorName]
         currentShowingMediator?.let { showingMediator ->
@@ -436,8 +434,6 @@ open class View : Fragment(), IView, Application.ActivityLifecycleCallbacks {
                     // hide selected mediator and remove it from backstack
                     hide(true)
                 }
-
-
             }
         }
     }
