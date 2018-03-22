@@ -1,10 +1,11 @@
 package com.mincor.puremvc_kotlin.controllers
 
 import com.mincor.puremvc_kotlin.facades.AppFacade
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
-import com.mincor.puremvc_kotlin.framework.multicore.patterns.command.SimpleCommand
 import com.mincor.puremvc_kotlin.models.UserProxy
-import com.mincor.puremvc_kotlin.views.*
+import com.mincor.puremvc_kotlin.views.UserAuthMediator
+import com.mincor.puremvc_kotlin.views.UserListsMediator
+import com.rasalexman.kotlinmvc.interfaces.INotification
+import com.rasalexman.kotlinmvc.patterns.command.SimpleCommand
 
 /**
  * Created by a.minkin on 21.11.2017.

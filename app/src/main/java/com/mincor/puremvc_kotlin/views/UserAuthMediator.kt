@@ -9,10 +9,10 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Toast
 import com.mincor.puremvc_kotlin.R
 import com.mincor.puremvc_kotlin.facades.AppFacade
-import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimator
-import com.mincor.puremvc_kotlin.framework.multicore.interfaces.INotification
 import com.mincor.puremvc_kotlin.models.UserProxy
 import com.mincor.puremvc_kotlin.utils.Keyboards
+import com.rasalexman.kotlinmvc.core.animation.LinearAnimator
+import com.rasalexman.kotlinmvc.interfaces.INotification
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.sdk25.coroutines.onClick
@@ -59,7 +59,7 @@ class UserAuthMediator : ToolbarMediator(NAME) {
         sendNotification(AppFacade.AUTH, arrayOf(name, password))
     }
 
-    private fun onHideClicked(){
+    private fun onHideClicked() {
         hide(true, LinearAnimator())
     }
 
@@ -81,7 +81,7 @@ class UserAuthMediator : ToolbarMediator(NAME) {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId){
+        when (item.itemId) {
             R.id.action_settings -> com.mincor.puremvc_kotlin.activity.log { "SETTINGS CLICKED" }
             R.id.action_about -> com.mincor.puremvc_kotlin.activity.log { "ABOUT CLICKED" }
         }

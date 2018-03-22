@@ -5,7 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import com.mincor.puremvc_kotlin.R
-import com.mincor.puremvc_kotlin.framework.multicore.core.animation.LinearAnimator
+import com.rasalexman.kotlinmvc.core.animation.LinearAnimator
 import org.jetbrains.anko.*
 import org.jetbrains.anko.appcompat.v7.toolbar
 import org.jetbrains.anko.recyclerview.v7.recyclerView
@@ -28,7 +28,7 @@ class UserListsMediator : ToolbarMediator(NAME) {
         setHomeButtonEnable()
     }
 
-    fun onBackClickHandler(){
+    fun onBackClickHandler() {
         popToBack(LinearAnimator())
     }
 
@@ -48,7 +48,7 @@ class UserListsMediator : ToolbarMediator(NAME) {
                     backgroundResource = R.color.colorPrimary
                 }
 
-                button("back"){
+                button("back") {
                     onClick {
                         onBackClickHandler()
                     }

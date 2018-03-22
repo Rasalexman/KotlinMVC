@@ -2,7 +2,7 @@ package com.mincor.puremvc_kotlin.facades
 
 import com.mincor.puremvc_kotlin.controllers.StartupCommand
 import com.mincor.puremvc_kotlin.controllers.UserAuthCommand
-import com.mincor.puremvc_kotlin.framework.multicore.patterns.facade.Facade
+import com.rasalexman.kotlinmvc.patterns.facade.Facade
 
 /**
  * Created by a.minkin on 21.11.2017.
