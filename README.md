@@ -1,5 +1,5 @@
 # KotlinMVC
-This is a vision on how android development can drive without fragment. It use ANKO Layout to generate UI. \n 
+This is a vision on how android development can drive without fragment. It use ANKO Layout to generate UI.  
 There are main blocks in this framework:
 - MODEL (PROXY) - services and VO holders
 - VIEW (MEDIATORS) - simple layout handler class
