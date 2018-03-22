@@ -1,5 +1,5 @@
 # KotlinMVC
-This is a vision on how android development can drive without fragment. It use ANKO Layout to generate UI 
+This is a vision on how android development can drive without fragment. It use ANKO Layout to generate UI. \n 
 There are main blocks in this framework:
 - MODEL (PROXY) - services and VO holders
 - VIEW (MEDIATORS) - simple layout handler class
@@ -19,4 +19,18 @@ appFacade.attachActivity(this).showLastOrExistMediator(UserAuthMediator.NAME, Li
 ```
 
 See the example project and java doc to know more about this framework
-# This project is under development 
+
+Gradle:
+```
+compile 'com.rasalexman.kotlinmvc:kotlinmvc:1.0.0'
+```
+
+Maven:
+```
+<dependency>
+  <groupId>com.rasalexman.kotlinmvc</groupId>
+  <artifactId>kotlinmvc</artifactId>
+  <version>1.0.0</version>
+  <type>pom</type>
+</dependency>
+```
