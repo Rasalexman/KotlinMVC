@@ -34,7 +34,7 @@ class UserAuthMediator : ToolbarMediator(NAME) {
     var password = ""
 
     override fun onCreateView() {
-        viewComponent = UserAuthUI().createView(AnkoContext.create(getFacade().activity, this))
+        viewComponent = UserAuthUI().createView(AnkoContext.create(facade.activity, this))
         super.onCreateView()
     }
 
@@ -69,9 +69,9 @@ class UserAuthMediator : ToolbarMediator(NAME) {
     override fun handleNotification(notification: INotification) {
         when (notification.name) {
             UserProxy.NOTIFICATION_AUTH_COMPLETE -> {
-                getFacade().retrieveMediator(UserListsMediator.NAME)?.show(false, LinearAnimator())
+                facade.retrieveMediator(UserListsMediator.NAME)?.show(false, LinearAnimator())
             }
-            UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(getFacade().activity, "Login Failed", Toast.LENGTH_SHORT).show()
+            UserProxy.NOTIFICATION_AUTH_FAILED -> Toast.makeText(facade.activity, "Login Failed", Toast.LENGTH_SHORT).show()
         }
     }
 

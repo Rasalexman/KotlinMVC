@@ -44,7 +44,7 @@ dependencies {
     implementation "org.jetbrains.anko:anko-recyclerview-v7:$anko_version"
     implementation "org.jetbrains.anko:anko-recyclerview-v7-coroutines:$anko_version"
 
-    implementation 'com.rasalexman.kotlinmvc:kotlinmvc:1.0.0'
+    implementation 'com.rasalexman.kotlinmvc:kotlinmvc:1.0.1'
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'

@@ -13,11 +13,11 @@ import com.rasalexman.kotlinmvc.patterns.command.SimpleCommand
 class StartupCommand : SimpleCommand() {
 
     override fun execute(notification: INotification) {
-        getFacade().registerProxy(UserProxy())
+        facade.registerProxy(UserProxy())
 
-        getFacade().registerMediator(UserAuthMediator())
-        getFacade().registerMediator(UserListsMediator())
+        facade.registerMediator(UserAuthMediator())
+        facade.registerMediator(UserListsMediator())
 
-        getFacade().removeCommand(AppFacade.STARTUP)
+        facade.removeCommand(AppFacade.STARTUP)
     }
 }

@@ -28,19 +28,19 @@ abstract class ToolbarMediator(override val mediatorName: String) : Mediator(med
     override fun onRemove() {
         super.onRemove()
         toolBar?.setNavigationOnClickListener(null)
-        (getFacade().activity as IActionBarProvider<ActionBar, Toolbar>).setSupportActionBar(null)
+        (facade.activity as IActionBarProvider<ActionBar, Toolbar>).setSupportActionBar(null)
         toolBar = null
     }
 
     private val actionBar: ActionBar?
         get() {
-            val actionBarProvider = (getFacade().activity as IActionBarProvider<ActionBar, Toolbar>)
+            val actionBarProvider = (facade.activity as IActionBarProvider<ActionBar, Toolbar>)
             return actionBarProvider.getSupportActionBar()
         }
 
     protected fun setActionBar(toolbar: Toolbar?) {
         toolbar?.let {
-            (getFacade().activity as IActionBarProvider<ActionBar, Toolbar>).setSupportActionBar(it)
+            (facade.activity as IActionBarProvider<ActionBar, Toolbar>).setSupportActionBar(it)
             it.setNavigationOnClickListener(this)
         }
     }

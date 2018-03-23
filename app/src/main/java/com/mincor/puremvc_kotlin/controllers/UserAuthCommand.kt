@@ -9,7 +9,7 @@ import com.rasalexman.kotlinmvc.patterns.command.SimpleCommand
  */
 class UserAuthCommand : SimpleCommand() {
     override fun execute(notification: INotification) {
-        val userProxy: UserProxy = getFacade().retrieveProxy(UserProxy.NAME) as UserProxy
+        val userProxy: UserProxy = facade.retrieveProxy(UserProxy.NAME) as UserProxy
         val params: Array<String> = notification.body as Array<String>
         userProxy.authorization(params[0], params[1])
     }
