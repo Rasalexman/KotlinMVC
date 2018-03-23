@@ -26,6 +26,8 @@ class UserListsMediator : ToolbarMediator(NAME) {
         viewComponent = UserListUI().createView(AnkoContext.Companion.create(getFacade().activity, this))
         super.onCreateView()
         setHomeButtonEnable()
+
+        this.getFacade()
     }
 
     fun onBackClickHandler() {
