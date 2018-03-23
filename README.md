@@ -22,7 +22,7 @@ See the example project and java doc to know more about this framework
 
 Gradle:
 ```
-compile 'com.rasalexman.kotlinmvc:kotlinmvc:1.0.0'
+compile 'com.rasalexman.kotlinmvc:kotlinmvc:1.0.1'
 ```
 
 Maven:
@@ -30,7 +30,7 @@ Maven:
 <dependency>
   <groupId>com.rasalexman.kotlinmvc</groupId>
   <artifactId>kotlinmvc</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1</version>
   <type>pom</type>
 </dependency>
 ```
